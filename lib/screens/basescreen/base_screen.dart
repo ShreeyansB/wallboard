@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:wall/utils/size_config.dart';
@@ -28,44 +27,47 @@ class _HomePageState extends State<HomePage> {
             )),
         child: Scaffold(
           backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            toolbarHeight: kToolbarHeight + SizeConfig.safeBlockVertical * 1,
+            textTheme: Theme.of(context).textTheme,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: Text(
+              "Wallpapers",
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.8,
+                  fontSize: SizeConfig.safeBlockHorizontal * 5.8),
+            ),
+          ),
           body: Stack(
             children: [
-              CustomScrollView(
-                physics: BouncingScrollPhysics(),
-                slivers: [
-                  SliverAppBar(
-                    toolbarHeight:
-                        kToolbarHeight + SizeConfig.safeBlockVertical * 1.4,
-                    textTheme: Theme.of(context).textTheme,
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    title: Text(
-                      "Wallpapers",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600, letterSpacing: 0.8),
-                    ),
-                  ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) => Container(
-                        height: 150,
+              SingleChildScrollView(
+                physics: ClampingScrollPhysics(),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (var i = 0; i < 10; i++)
+                      Container(
+                        height: 100,
                         color: Colors.deepPurple,
-                        margin: EdgeInsets.all(20),
-                      ),
-                      childCount: 10,
-                    ),
-                  ),
-                ],
+                        margin: EdgeInsets.all(10),
+                      )
+                  ],
+                ),
               ),
               Positioned(
                 bottom: 0,
                 child: ClipRect(
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 12),
+                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                     child: Container(
                       width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(horizontal: 35, vertical: 10),
-                      color: Colors.black54,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 35, vertical: 10),
+                      color: Theme.of(context)
+                          .scaffoldBackgroundColor
+                          .withOpacity(0.6),
                       child: SalomonBottomBar(
                         currentIndex: _currentIndex,
                         onTap: (i) => setState(() => _currentIndex = i),
@@ -73,17 +75,14 @@ class _HomePageState extends State<HomePage> {
                           SalomonBottomBarItem(
                             icon: Icon(Icons.home),
                             title: Text("Home"),
-                            selectedColor: Colors.deepPurpleAccent.shade400,
                           ),
                           SalomonBottomBarItem(
                             icon: Icon(Icons.favorite_border),
                             title: Text("Likes"),
-                            selectedColor: Colors.deepPurpleAccent.shade400,
                           ),
                           SalomonBottomBarItem(
                             icon: Icon(Icons.search),
                             title: Text("Search"),
-                            selectedColor: Colors.deepPurpleAccent.shade400,
                           ),
                         ],
                       ),

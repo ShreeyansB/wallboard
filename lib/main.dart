@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:wall/screens/homescreen/home_screen.dart';
+import 'package:wall/controllers/database_controller.dart';
+import 'package:wall/screens/basescreen/base_screen.dart';
 
 void main() {
   Paint.enableDithering = true;
@@ -12,8 +14,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.transparent,
-        statusBarColor: Colors.transparent,));
+      systemNavigationBarColor: Colors.transparent,
+      statusBarColor: Colors.transparent,
+    ));
+
+    Get.put(DatabaseController());
 
     return MaterialApp(
       title: 'Flutter Demo',

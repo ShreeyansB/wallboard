@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wall/controllers/database_controller.dart';
+import 'package:wall/controllers/navigation_controller.dart';
 import 'package:wall/screens/basescreen/base_screen.dart';
 
 void main() {
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
     ));
 
     Get.put(DatabaseController());
+    Get.put(NavController());
 
     return MaterialApp(
       title: 'Flutter Demo',
@@ -36,17 +38,37 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xfff6e6ff),
       ),
       darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.deepPurple,
-        primaryColor: Colors.deepPurpleAccent.shade400,
-        colorScheme: ColorScheme.fromSwatch(
-            primarySwatch: Colors.deepPurple,
-            brightness: Brightness.dark,
-            accentColor: Colors.deepPurpleAccent.shade400,
-            backgroundColor: Color(0xff0c0b1c)),
-        textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
-        scaffoldBackgroundColor: Color(0xff0c0b1c),
-      ),
+          brightness: Brightness.dark,
+          primarySwatch: Colors.deepPurple,
+          primaryColor: Colors.deepPurpleAccent.shade400,
+          splashColor: Colors.white10,
+          splashFactory: InkRipple.splashFactory,
+          colorScheme: ColorScheme.fromSwatch(
+              primarySwatch: Colors.deepPurple,
+              brightness: Brightness.dark,
+              accentColor: Colors.deepPurpleAccent.shade400,
+              backgroundColor: Color(0xff0e0c24)),
+          textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
+          scaffoldBackgroundColor: Color(0xff0e0c24),
+          tooltipTheme: TooltipThemeData(
+            textStyle: GoogleFonts.inter(
+              color: Colors.white
+            ),
+            decoration: BoxDecoration(
+              color: Colors.black54,
+              borderRadius: BorderRadius.circular(10),
+            )
+          ),
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            backgroundColor: Color(0xff0e0c24),
+            elevation: 0,
+            type: BottomNavigationBarType.fixed,
+            selectedLabelStyle: GoogleFonts.inter(fontWeight: FontWeight.w500),
+            unselectedLabelStyle:
+                GoogleFonts.inter(fontWeight: FontWeight.w500),
+            selectedItemColor: Colors.deepPurpleAccent.shade100,
+            unselectedItemColor: Colors.white,
+          )),
       home: HomePage(),
     );
   }

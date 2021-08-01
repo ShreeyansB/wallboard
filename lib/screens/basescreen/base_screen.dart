@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:get/get.dart';
+import 'package:wall/controllers/navigation_controller.dart';
+import 'package:wall/screens/basescreen/widgets/bottom_nav_bar.dart';
 import 'package:wall/utils/size_config.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,7 +13,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
+  var navController = Get.find<NavController>();
+  final PageStorageBucket bucket = PageStorageBucket();
 
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -40,60 +43,35 @@ class _HomePageState extends State<HomePage> {
                   fontSize: SizeConfig.safeBlockHorizontal * 5.8),
             ),
           ),
-          body: Stack(
-            children: [
-              SingleChildScrollView(
-                physics: ClampingScrollPhysics(),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    for (var i = 0; i < 10; i++)
-                      Container(
-                        height: 100,
-                        color: Colors.deepPurple,
-                        margin: EdgeInsets.all(10),
-                      )
-                  ],
-                ),
+          body: PageStorage(
+            bucket: bucket,
+            child: Obx(
+              () => AnimatedSwitcher(
+                duration: Duration(milliseconds: 400),
+                reverseDuration: Duration(milliseconds: 400),
+                switchInCurve: Curves.easeInQuint,
+                switchOutCurve: Curves.easeOutQuint,
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return FadeTransition(child: child, opacity: animation);
+                },
+                child: navController.screens[navController.navIndex.value],
               ),
-              Positioned(
-                bottom: 0,
-                child: ClipRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 35, vertical: 10),
-                      color: Theme.of(context)
-                          .scaffoldBackgroundColor
-                          .withOpacity(0.6),
-                      child: SalomonBottomBar(
-                        currentIndex: _currentIndex,
-                        onTap: (i) => setState(() => _currentIndex = i),
-                        items: [
-                          SalomonBottomBarItem(
-                            icon: Icon(Icons.home),
-                            title: Text("Home"),
-                          ),
-                          SalomonBottomBarItem(
-                            icon: Icon(Icons.favorite_border),
-                            title: Text("Likes"),
-                          ),
-                          SalomonBottomBarItem(
-                            icon: Icon(Icons.search),
-                            title: Text("Search"),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
+          bottomNavigationBar: MyBottomNavBar(),
         ),
       ),
     );
   }
 }
+
+// Obx(() => AnimatedSwitcher(
+//                 duration: Duration(milliseconds: 500),
+//                 reverseDuration: Duration(milliseconds: 500),
+//                 switchInCurve: Curves.easeInQuint,
+//                 switchOutCurve: Curves.easeOutQuint,
+//                 transitionBuilder: (Widget child, Animation<double> animation) {
+//                   return FadeTransition(child: child, opacity: animation);
+//                 },
+//                 child: navController.screens[navController.navIndex.value],
+//               )),

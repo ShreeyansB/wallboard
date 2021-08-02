@@ -43,24 +43,24 @@ class MyApp extends StatelessWidget {
           primaryColor: Colors.deepPurpleAccent.shade400,
           splashColor: Colors.white10,
           splashFactory: InkRipple.splashFactory,
-          colorScheme: ColorScheme.fromSwatch(
-              primarySwatch: Colors.deepPurple,
+          accentColor: Colors.deepPurpleAccent.shade100,
+          colorScheme: ColorScheme.dark(
+              primary: Colors.deepPurple,
               brightness: Brightness.dark,
-              accentColor: Colors.deepPurpleAccent.shade400,
-              backgroundColor: Color(0xff0e0c24)),
+              primaryVariant: Colors.deepPurpleAccent.shade400,
+              background: Color(0xff0B0A1F),
+              onBackground: Colors.white,
+              secondary: Color(0xff372e61)),
           textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
-          scaffoldBackgroundColor: Color(0xff0e0c24),
+          scaffoldBackgroundColor: Color(0xff0B0A1F),
           tooltipTheme: TooltipThemeData(
-            textStyle: GoogleFonts.inter(
-              color: Colors.white
-            ),
-            decoration: BoxDecoration(
-              color: Colors.black54,
-              borderRadius: BorderRadius.circular(10),
-            )
-          ),
+              textStyle: GoogleFonts.inter(color: Colors.white),
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(10),
+              )),
           bottomNavigationBarTheme: BottomNavigationBarThemeData(
-            backgroundColor: Color(0xff0e0c24),
+            backgroundColor: Color(0xff0B0A1F),
             elevation: 0,
             type: BottomNavigationBarType.fixed,
             selectedLabelStyle: GoogleFonts.inter(fontWeight: FontWeight.w500),
@@ -68,7 +68,11 @@ class MyApp extends StatelessWidget {
                 GoogleFonts.inter(fontWeight: FontWeight.w500),
             selectedItemColor: Colors.deepPurpleAccent.shade100,
             unselectedItemColor: Colors.white,
-          )),
+          ),
+          scrollbarTheme: ThemeData.dark().scrollbarTheme.copyWith(
+                thumbColor: MaterialStateProperty.all(Colors.white12),
+                trackColor: MaterialStateProperty.all(Colors.white54),
+              )),
       home: HomePage(),
     );
   }

@@ -22,11 +22,11 @@ class _HomePageState extends State<HomePage> {
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Container(
         decoration: BoxDecoration(
-            backgroundBlendMode: BlendMode.overlay,
+            backgroundBlendMode: BlendMode.softLight,
             gradient: RadialGradient(
-              colors: [Colors.white, Colors.transparent],
+              colors: [Colors.white54, Colors.transparent],
               center: Alignment.bottomRight,
-              radius: SizeConfig.safeBlockVertical * 0.75,
+              radius: SizeConfig.safeBlockVertical * 0.4,
             )),
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -64,14 +64,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-// Obx(() => AnimatedSwitcher(
-//                 duration: Duration(milliseconds: 500),
-//                 reverseDuration: Duration(milliseconds: 500),
-//                 switchInCurve: Curves.easeInQuint,
-//                 switchOutCurve: Curves.easeOutQuint,
-//                 transitionBuilder: (Widget child, Animation<double> animation) {
-//                   return FadeTransition(child: child, opacity: animation);
-//                 },
-//                 child: navController.screens[navController.navIndex.value],
-//               )),

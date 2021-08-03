@@ -16,7 +16,8 @@ class DatabaseController extends GetxController {
   var isPaginationLoaded = false.obs;
 
   Future<bool> initWalls() async {
-    wallpapers = [];
+    int count = dbWallpapers.length;
+    dbWallpapers = [];
     Response response = await dbProvider.getWalls();
     if (response.statusCode != 200) {
       update();
@@ -26,12 +27,18 @@ class DatabaseController extends GetxController {
       response.body.forEach((map) {
         WallpaperModel? object = WallpaperModel.fromJson(map);
         if (object != null) dbWallpapers.add(object);
+        // dbWallpapers.forEach(
+        //     (element) => element.url = "http://via.placeholder.com/100x200");
       });
-      wallpapers.addAll(dbWallpapers.sublist(
-          0, dbWallpapers.length < 6 ? dbWallpapers.length : 6));
-      if (wallpapers.length == dbWallpapers.length)
-        isPaginationLoaded.value = true;
-      isLoaded.value = true;
+      if (dbWallpapers.length == count && count != 0)
+        isPaginationLoaded.value = false;
+      if (wallpapers.isEmpty) {
+        wallpapers.addAll(dbWallpapers.sublist(
+            0, dbWallpapers.length < 6 ? dbWallpapers.length : 6));
+        if (wallpapers.length == dbWallpapers.length)
+          isPaginationLoaded.value = true;
+        isLoaded.value = true;
+      }
       update();
       return true;
     }

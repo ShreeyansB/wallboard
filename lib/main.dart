@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wall/controllers/database_controller.dart';
 import 'package:wall/controllers/navigation_controller.dart';
+import 'package:wall/dev_settings.dart';
 import 'package:wall/screens/basescreen/base_screen.dart';
 
 void main() {
@@ -33,9 +34,9 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.deepPurple,
             brightness: Brightness.light,
             accentColor: Colors.deepPurpleAccent.shade400,
-            backgroundColor: Color(0xfff6e6ff)),
+            backgroundColor: kBgColorLight),
         textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme),
-        scaffoldBackgroundColor: Color(0xfff6e6ff),
+        scaffoldBackgroundColor: kBgColorLight,
       ),
       darkTheme: ThemeData(
           brightness: Brightness.dark,
@@ -48,11 +49,11 @@ class MyApp extends StatelessWidget {
               primary: Colors.deepPurple,
               brightness: Brightness.dark,
               primaryVariant: Colors.deepPurpleAccent.shade400,
-              background: Color(0xff0B0A1F),
+              background: kBgColorDark,
               onBackground: Colors.white,
               secondary: Color(0xff372e61)),
           textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
-          scaffoldBackgroundColor: Color(0xff0B0A1F),
+          scaffoldBackgroundColor: kBgColorDark,
           tooltipTheme: TooltipThemeData(
               textStyle: GoogleFonts.inter(color: Colors.white),
               decoration: BoxDecoration(
@@ -60,7 +61,7 @@ class MyApp extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               )),
           bottomNavigationBarTheme: BottomNavigationBarThemeData(
-            backgroundColor: Color(0xff0B0A1F),
+            backgroundColor: kAppbarColorDark,
             elevation: 0,
             type: BottomNavigationBarType.fixed,
             selectedLabelStyle: GoogleFonts.inter(fontWeight: FontWeight.w500),

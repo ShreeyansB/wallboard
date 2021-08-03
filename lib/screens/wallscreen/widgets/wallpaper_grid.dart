@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wall/controllers/database_controller.dart';
+import 'package:wall/dev_settings.dart';
+import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
 import 'package:wall/utils/size_config.dart';
 
 class WallGrid extends StatefulWidget {
@@ -14,25 +16,6 @@ class WallGrid extends StatefulWidget {
 }
 
 class _WallGridState extends State<WallGrid> {
-  double kBorderRadius = 4;
-  double kBlurAmount = 0;
-
-  double kGridViewPadding = 5;
-  double kGridSpacing = 4.3;
-  double kGridAspectRatio = 0.7;
-  int kGridCount = 2;
-
-  double kBannerHeight = 8;
-  Color kBannerColor = Colors.black26;
-  Color kBannerTitleColor = Colors.white;
-  Color kBannerAuthorColor = Colors.white60;
-  double kBannerTitleSize = 3.2;
-  double kBannerAuthorSize = 2.5;
-  double kBannerPadding = 3.2;
-
-  bool kShowAuthor = true;
-  String kNullAuthorName = "Unnamed";
-
   ScrollController _scrollController = ScrollController();
   var dbController = Get.find<DatabaseController>();
 
@@ -70,7 +53,7 @@ class _WallGridState extends State<WallGrid> {
               EdgeInsets.all(SizeConfig.safeBlockHorizontal * kGridViewPadding),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               childAspectRatio: kGridAspectRatio,
-              crossAxisCount: 2,
+              crossAxisCount: kGridCount,
               crossAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing,
               mainAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing),
           itemBuilder: (context, index) {
@@ -81,6 +64,7 @@ class _WallGridState extends State<WallGrid> {
                 // platform.invokeMethod("setWallpaper", {"uri": path});
               },
               child: CachedNetworkImage(
+                maxHeightDiskCache: MediaQuery.of(context).size.height ~/ 2.1,
                 imageUrl: ctrl.wallpapers[index].url,
                 imageBuilder: (context, imageProvider) {
                   return WallImage(
@@ -88,6 +72,8 @@ class _WallGridState extends State<WallGrid> {
                     index: index,
                     ctrl: ctrl,
                     kBorderRadius: kBorderRadius,
+                    kBorderRadiusTop: kBorderRadiusTop,
+                    kBorderRadiusBottom: kBorderRadiusBottom,
                     kBannerHeight: kBannerHeight,
                     kBlurAmount: kBlurAmount,
                     kBannerColor: kBannerColor,
@@ -98,6 +84,7 @@ class _WallGridState extends State<WallGrid> {
                     kNullAuthorName: kNullAuthorName,
                     kBannerAuthorColor: kBannerAuthorColor,
                     kBannerAuthorSize: kBannerAuthorSize,
+                    kBannerAlignment: kBannerAlignment,
                   );
                 },
                 placeholder: (context, url) => Center(
@@ -116,10 +103,12 @@ class _WallGridState extends State<WallGrid> {
   }
 }
 
-class WallImage extends StatefulWidget {
+class WallImage extends StatelessWidget {
   const WallImage({
     Key? key,
     required this.kBorderRadius,
+    required this.kBorderRadiusTop,
+    required this.kBorderRadiusBottom,
     required this.kBannerHeight,
     required this.kBlurAmount,
     required this.kBannerColor,
@@ -130,12 +119,15 @@ class WallImage extends StatefulWidget {
     required this.kNullAuthorName,
     required this.kBannerAuthorColor,
     required this.kBannerAuthorSize,
+    required this.kBannerAlignment,
     required this.imageProvider,
     required this.ctrl,
     required this.index,
   }) : super(key: key);
 
   final double kBorderRadius;
+  final double kBorderRadiusTop;
+  final double kBorderRadiusBottom;
   final double kBannerHeight;
   final double kBlurAmount;
   final Color kBannerColor;
@@ -146,15 +138,10 @@ class WallImage extends StatefulWidget {
   final String kNullAuthorName;
   final Color kBannerAuthorColor;
   final double kBannerAuthorSize;
+  final Alignment kBannerAlignment;
   final ImageProvider imageProvider;
   final DatabaseController ctrl;
   final int index;
-
-  @override
-  _WallImageState createState() => _WallImageState();
-}
-
-class _WallImageState extends State<WallImage> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -162,38 +149,46 @@ class _WallImageState extends State<WallImage> {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(
-              SizeConfig.safeBlockHorizontal * widget.kBorderRadius),
+              SizeConfig.safeBlockHorizontal * kBorderRadius),
           child: Container(
             decoration: BoxDecoration(),
             child: Image(
               filterQuality: FilterQuality.low,
-              image: widget.imageProvider,
+              image: imageProvider,
               fit: BoxFit.cover,
             ),
           ),
         ),
         Align(
-            alignment: Alignment.bottomCenter,
+            alignment: kBannerAlignment,
             child: Container(
-              height: SizeConfig.safeBlockVertical * widget.kBannerHeight,
+              height: SizeConfig.safeBlockVertical * kBannerHeight,
               child: ClipRRect(
                 borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(
+                        SizeConfig.safeBlockHorizontal * kBorderRadiusTop),
+                    topRight: Radius.circular(
+                        SizeConfig.safeBlockHorizontal * kBorderRadiusTop),
                     bottomLeft: Radius.circular(
-                        SizeConfig.safeBlockHorizontal * widget.kBorderRadius),
+                        SizeConfig.safeBlockHorizontal * kBorderRadiusBottom),
                     bottomRight: Radius.circular(
-                        SizeConfig.safeBlockHorizontal * widget.kBorderRadius)),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                      sigmaX: widget.kBlurAmount, sigmaY: widget.kBlurAmount),
+                        SizeConfig.safeBlockHorizontal * kBorderRadiusBottom)),
+                child: ConditionalParentWidget(
+                  condition: kBlurAmount != 0,
+                  conditionalBuilder: (child) => BackdropFilter(
+                    filter: ImageFilter.blur(
+                        sigmaX: kBlurAmount, sigmaY: kBlurAmount),
+                    child: child,
+                  ),
                   child: Container(
-                    color: widget.kBannerColor,
+                    color: kBannerColor,
                     child: DefaultTextStyle(
                       style: GoogleFonts.inter(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       child: Padding(
-                        padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal *
-                            widget.kBannerPadding),
+                        padding: EdgeInsets.all(
+                            SizeConfig.safeBlockHorizontal * kBannerPadding),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -205,23 +200,23 @@ class _WallImageState extends State<WallImage> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
-                                    widget.ctrl.wallpapers[widget.index].name,
+                                    ctrl.wallpapers[index].name,
                                     style: TextStyle(
-                                        color: widget.kBannerTitleColor,
+                                        color: kBannerTitleColor,
                                         fontSize:
                                             SizeConfig.safeBlockHorizontal *
-                                                widget.kBannerTitleSize,
+                                                kBannerTitleSize,
                                         fontWeight: FontWeight.w600),
                                   ),
-                                  if (widget.kShowAuthor)
+                                  if (kShowAuthor)
                                     Text(
-                                      "by ${widget.ctrl.wallpapers[widget.index].author ?? widget.kNullAuthorName}",
+                                      "by ${ctrl.wallpapers[index].author ?? kNullAuthorName}",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
-                                          color: widget.kBannerAuthorColor,
+                                          color: kBannerAuthorColor,
                                           fontSize:
                                               SizeConfig.safeBlockHorizontal *
-                                                  widget.kBannerAuthorSize),
+                                                  kBannerAuthorSize),
                                     ),
                                 ],
                               ),

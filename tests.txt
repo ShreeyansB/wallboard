@@ -1,0 +1,11 @@
+# Framerate Tests (in avg. ms/frame)
+
+list of containers = 9
+grid w/o cliprect and blur = 24
+low res grid w/o cliprect and blur = 8.5
+low res grid w/o cliprect, non-gradient scaffold bg and blur = 5.5
+low res grid but stateless, non-gradient bg =  9.5
+high res grid but stateless, non-gradient bg =  21
+high res with opt.img grid but stateless, non-gradient bg = 9.4
+high res with max height grid but stateless, non-gradient bg = 9.4
+

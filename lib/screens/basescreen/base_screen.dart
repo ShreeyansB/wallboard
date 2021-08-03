@@ -2,7 +2,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wall/controllers/navigation_controller.dart';
+import 'package:wall/dev_settings.dart';
 import 'package:wall/screens/basescreen/widgets/bottom_nav_bar.dart';
+import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
 import 'package:wall/utils/size_config.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,14 +22,25 @@ class _HomePageState extends State<HomePage> {
     SizeConfig().init(context);
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
-      child: Container(
-        decoration: BoxDecoration(
-            backgroundBlendMode: BlendMode.softLight,
-            gradient: RadialGradient(
-              colors: [Colors.white54, Colors.transparent],
-              center: Alignment.bottomRight,
-              radius: SizeConfig.safeBlockVertical * 0.4,
-            )),
+      child: ConditionalParentWidget(
+        condition: kIsBgGradient,
+        conditionalBuilder: (child) {
+          return Container(
+            decoration: BoxDecoration(
+                backgroundBlendMode: BlendMode.softLight,
+                gradient: RadialGradient(
+                  colors: [
+                    Theme.of(context).brightness == Brightness.light
+                        ? kGradientColorLight
+                        : kGradientColorDark,
+                    Colors.transparent
+                  ],
+                  center: Alignment.bottomRight,
+                  radius: SizeConfig.safeBlockVertical * 0.4,
+                )),
+            child: child,
+          );
+        },
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
@@ -49,8 +62,8 @@ class _HomePageState extends State<HomePage> {
               () => AnimatedSwitcher(
                 duration: Duration(milliseconds: 400),
                 reverseDuration: Duration(milliseconds: 400),
-                switchInCurve: Curves.easeInQuint,
-                switchOutCurve: Curves.easeOutQuint,
+                switchInCurve: Curves.easeOut,
+                switchOutCurve: Curves.easeIn,
                 transitionBuilder: (Widget child, Animation<double> animation) {
                   return FadeTransition(child: child, opacity: animation);
                 },

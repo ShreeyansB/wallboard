@@ -58,7 +58,6 @@ class _LikeButtonState extends State<LikeButton>
       borderRadius: BorderRadius.circular(100),
       onTap: () {
         if (allowAnimation) {
-          print("trig");
           allowAnimation = false;
           setState(() {
             isEnabled = !isEnabled;

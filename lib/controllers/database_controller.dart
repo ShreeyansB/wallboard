@@ -34,7 +34,7 @@ class DatabaseController extends GetxController {
         isPaginationLoaded.value = false;
       if (wallpapers.isEmpty) {
         wallpapers.addAll(dbWallpapers.sublist(
-            0, dbWallpapers.length < 6 ? dbWallpapers.length : 6));
+            0, dbWallpapers.length < 12 ? dbWallpapers.length : 12));
         if (wallpapers.length == dbWallpapers.length)
           isPaginationLoaded.value = true;
         isLoaded.value = true;

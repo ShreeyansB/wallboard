@@ -68,6 +68,7 @@ class _WallGridState extends State<WallGrid> {
           scrollDirection: Axis.vertical,
           itemCount: ctrl.wallpapers.length,
           shrinkWrap: true,
+          cacheExtent: MediaQuery.of(context).size.height * 3,
           padding:
               EdgeInsets.all(SizeConfig.safeBlockHorizontal * kGridViewPadding),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -76,43 +77,38 @@ class _WallGridState extends State<WallGrid> {
               crossAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing,
               mainAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing),
           itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () async {
-                // saveFile(ctrl.wallpapers[index]);
-                // platform.invokeMethod("setWallpaper", {"uri": path});
+            return CachedNetworkImage(
+              // maxHeightDiskCache: MediaQuery.of(context).size.height ~/ 2.1,
+              memCacheHeight: 5,
+              imageUrl: ctrl.wallpapers[index].url,
+              imageBuilder: (context, imageProvider) {
+                return WallImage(
+                  imageProvider: imageProvider,
+                  index: index,
+                  ctrl: ctrl,
+                  kBorderRadius: kBorderRadius,
+                  kBorderRadiusTop: kBorderRadiusTop,
+                  kBorderRadiusBottom: kBorderRadiusBottom,
+                  kBannerHeight: kBannerHeight,
+                  kBlurAmount: kBlurAmount,
+                  kBannerColor: kBannerColor,
+                  kBannerPadding: kBannerPadding,
+                  kBannerTitleColor: kBannerTitleColor,
+                  kBannerTitleSize: kBannerTitleSize,
+                  kShowAuthor: kShowAuthor,
+                  kNullAuthorName: kNullAuthorName,
+                  kBannerAuthorColor: kBannerAuthorColor,
+                  kBannerAuthorSize: kBannerAuthorSize,
+                  kBannerAlignment: kBannerAlignment,
+                );
               },
-              child: CachedNetworkImage(
-                // maxHeightDiskCache: MediaQuery.of(context).size.height ~/ 2.1,
-                imageUrl: ctrl.wallpapers[index].url,
-                imageBuilder: (context, imageProvider) {
-                  return WallImage(
-                    imageProvider: imageProvider,
-                    index: index,
-                    ctrl: ctrl,
-                    kBorderRadius: kBorderRadius,
-                    kBorderRadiusTop: kBorderRadiusTop,
-                    kBorderRadiusBottom: kBorderRadiusBottom,
-                    kBannerHeight: kBannerHeight,
-                    kBlurAmount: kBlurAmount,
-                    kBannerColor: kBannerColor,
-                    kBannerPadding: kBannerPadding,
-                    kBannerTitleColor: kBannerTitleColor,
-                    kBannerTitleSize: kBannerTitleSize,
-                    kShowAuthor: kShowAuthor,
-                    kNullAuthorName: kNullAuthorName,
-                    kBannerAuthorColor: kBannerAuthorColor,
-                    kBannerAuthorSize: kBannerAuthorSize,
-                    kBannerAlignment: kBannerAlignment,
-                  );
-                },
-                placeholder: (context, url) => Center(
-                    child: Container(
-                  height: SizeConfig.safeBlockHorizontal * 8,
-                  width: SizeConfig.safeBlockHorizontal * 8,
-                  child: CircularProgressIndicator(),
-                )),
-                errorWidget: (context, url, error) => Icon(Icons.error),
-              ),
+              placeholder: (context, url) => Center(
+                  child: Container(
+                height: SizeConfig.safeBlockHorizontal * 8,
+                width: SizeConfig.safeBlockHorizontal * 8,
+                child: CircularProgressIndicator(),
+              )),
+              errorWidget: (context, url, error) => Icon(Icons.error),
             );
           },
         ),
@@ -174,6 +170,22 @@ class WallImage extends StatelessWidget {
               filterQuality: FilterQuality.low,
               image: imageProvider,
               fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              splashFactory: Theme.of(context).splashFactory,
+              splashColor: Colors.transparent,
+              borderRadius: BorderRadius.circular(
+                  SizeConfig.safeBlockHorizontal * kBorderRadius),
+              onTap: () async {
+                print("EEEE");
+                // saveFile(ctrl.wallpapers[index]);
+                // platform.invokeMethod("setWallpaper", {"uri": path});
+              },
             ),
           ),
         ),

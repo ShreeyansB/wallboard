@@ -1,10 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wall/controllers/database_controller.dart';
+import 'package:wall/dev_settings.dart';
 
 class LikeButton extends StatefulWidget {
-  const LikeButton({Key? key, required this.size, required this.duration})
+  const LikeButton(
+      {Key? key, required this.size, required this.duration, required this.url})
       : super(key: key);
 
+  final String url;
   final double size;
   final int duration;
 
@@ -15,7 +20,7 @@ class LikeButton extends StatefulWidget {
 class _LikeButtonState extends State<LikeButton>
     with SingleTickerProviderStateMixin {
   bool allowAnimation = true;
-  bool isEnabled = false;
+  late bool isEnabled;
   String unliked = "\uEE0F";
   String liked = "\uEE0E";
 
@@ -23,11 +28,13 @@ class _LikeButtonState extends State<LikeButton>
 
   late Animation<double> _sizeAnimation;
   late AnimationController _controller;
+  var dbController = Get.find<DatabaseController>();
 
   @override
   void initState() {
     super.initState();
-    data.value = unliked;
+    isEnabled = dbController.favorites.contains(widget.url);
+    data.value = dbController.favorites.contains(widget.url) ? liked : unliked;
 
     _controller = AnimationController(
       vsync: this,
@@ -61,6 +68,9 @@ class _LikeButtonState extends State<LikeButton>
           allowAnimation = false;
           setState(() {
             isEnabled = !isEnabled;
+            isEnabled
+                ? dbController.addFavorite(widget.url)
+                : dbController.removeFavorite(widget.url);
             isEnabled ? _controller.forward() : _controller.reverse();
             Future.delayed(Duration(milliseconds: widget.duration ~/ 1.5))
                 .then((value) => allowAnimation = true);
@@ -79,7 +89,9 @@ class _LikeButtonState extends State<LikeButton>
                 style: TextStyle(
                     fontFamily: "RemixIcons",
                     fontSize: widget.size,
-                    color: isEnabled ? Colors.red : Colors.white),
+                    color: isEnabled
+                        ? kLikeButtonColor
+                        : Theme.of(context).textTheme.headline6!.color),
                 duration: Duration(milliseconds: widget.duration),
                 child: Obx(() => Text(data.value)),
               ),

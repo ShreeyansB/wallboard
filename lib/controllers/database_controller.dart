@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:wall/models/wallpaper_model.dart';
 
 class DatabaseProvider extends GetConnect {
@@ -12,6 +13,8 @@ class DatabaseController extends GetxController {
   DatabaseProvider dbProvider = DatabaseProvider();
   List<WallpaperModel> dbWallpapers = [];
   List<WallpaperModel> wallpapers = [];
+  List<String> favorites = [];
+  GetStorage storage = GetStorage();
   var isLoaded = false.obs;
   var isPaginationLoaded = false.obs;
 
@@ -39,6 +42,7 @@ class DatabaseController extends GetxController {
           isPaginationLoaded.value = true;
         isLoaded.value = true;
       }
+      favorites = List<String>.from(storage.read('fav') ?? []);
       update();
       return true;
     }
@@ -56,6 +60,18 @@ class DatabaseController extends GetxController {
 
       update();
     }
+  }
+
+  void addFavorite(String url) {
+    favorites.add(url);
+    storage.write('fav', favorites);
+    update(["fav"]);
+  }
+
+  void removeFavorite(String url) {
+    favorites.remove(url);
+    storage.write('fav', favorites);
+    update(["fav"]);
   }
 
   @override

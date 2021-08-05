@@ -5,12 +5,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:wall/controllers/database_controller.dart';
 import 'package:wall/dev_settings.dart';
 import 'package:wall/models/wallpaper_model.dart';
 import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
+import 'package:wall/screens/basescreen/widgets/image_viewer.dart';
 import 'package:wall/screens/basescreen/widgets/like_button.dart';
 import 'package:wall/utils/size_config.dart';
 
@@ -24,19 +24,6 @@ class WallGrid extends StatefulWidget {
 class _WallGridState extends State<WallGrid> {
   ScrollController _scrollController = ScrollController();
   var dbController = Get.find<DatabaseController>();
-
-  void saveFile(WallpaperModel image) async {
-    final cache = DefaultCacheManager();
-    final file = await cache.getSingleFile(image.url);
-    Directory appDocumentsDirectory = await getExternalStorageDirectory() ??
-        await getApplicationDocumentsDirectory(); // TODO: Implement IOS File Visibility
-    String appDocumentsPath = appDocumentsDirectory.path;
-    print(appDocumentsPath);
-    File savedFile = File(appDocumentsPath +
-        "/${image.name}-${image.author}${p.extension(file.path)}");
-    savedFile.writeAsBytesSync(file.readAsBytesSync());
-    print("Done");
-  }
 
   @override
   void initState() {
@@ -78,8 +65,8 @@ class _WallGridState extends State<WallGrid> {
               mainAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing),
           itemBuilder: (context, index) {
             return CachedNetworkImage(
-              // maxHeightDiskCache: MediaQuery.of(context).size.height ~/ 2.1,
-              memCacheHeight: 5,
+              maxHeightDiskCache: MediaQuery.of(context).size.height ~/ 2.4,
+              memCacheHeight: MediaQuery.of(context).size.height ~/ 2.4,
               imageUrl: ctrl.wallpapers[index].url,
               imageBuilder: (context, imageProvider) {
                 return WallImage(
@@ -156,6 +143,20 @@ class WallImage extends StatelessWidget {
   final ImageProvider imageProvider;
   final DatabaseController ctrl;
   final int index;
+
+  void saveFile(WallpaperModel image) async {
+    final cache = DefaultCacheManager();
+    final file = await cache.getSingleFile(image.url);
+    Directory appDocumentsDirectory = await getExternalStorageDirectory() ??
+        await getApplicationDocumentsDirectory(); // TODO: Implement IOS File Visibility
+    String appDocumentsPath = appDocumentsDirectory.path;
+    print(appDocumentsPath);
+    File savedFile = File(appDocumentsPath +
+        "/${image.name}-${image.author}${p.extension(file.path)}");
+    savedFile.writeAsBytesSync(file.readAsBytesSync());
+    print("Done");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -182,8 +183,10 @@ class WallImage extends StatelessWidget {
               borderRadius: BorderRadius.circular(
                   SizeConfig.safeBlockHorizontal * kBorderRadius),
               onTap: () async {
-                print("EEEE");
+                Get.to(() => ImageViewer(wall: ctrl.wallpapers[index]));
                 // saveFile(ctrl.wallpapers[index]);
+                // ScaffoldMessenger.of(context)
+                //     .showSnackBar(SnackBar(content: Text("Saved to storage")));
                 // platform.invokeMethod("setWallpaper", {"uri": path});
               },
             ),
@@ -207,13 +210,15 @@ class WallImage extends StatelessWidget {
                   condition: kBlurAmount != 0,
                   conditionalBuilder: (child) => BackdropFilter(
                     filter: ImageFilter.blur(
-                        sigmaX: kBlurAmount, sigmaY: kBlurAmount),
+                        sigmaX: kBlurAmount,
+                        sigmaY: kBlurAmount,
+                        tileMode: TileMode.decal),
                     child: child,
                   ),
                   child: Container(
                     color: kBannerColor,
                     child: DefaultTextStyle(
-                      style: GoogleFonts.inter(),
+                      style: Theme.of(context).textTheme.headline6!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       child: Padding(
@@ -229,14 +234,19 @@ class WallImage extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Text(
-                                    ctrl.wallpapers[index].name,
-                                    style: TextStyle(
+                                  Hero(
+                                    tag: ctrl.wallpapers[index].url,
+                                    child: Text(
+                                      ctrl.wallpapers[index].name,
+                                      style: TextStyle(
                                         color: kBannerTitleColor,
                                         fontSize:
                                             SizeConfig.safeBlockHorizontal *
                                                 kBannerTitleSize,
-                                        fontWeight: FontWeight.w600),
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.none
+                                      ),
+                                    ),
                                   ),
                                   if (kShowAuthor)
                                     Text(
@@ -255,6 +265,7 @@ class WallImage extends StatelessWidget {
                               flex: 4,
                               child: Center(
                                 child: LikeButton(
+                                    url: ctrl.wallpapers[index].url,
                                     size: SizeConfig.safeBlockVertical * 3.4,
                                     duration: 500),
                               ),

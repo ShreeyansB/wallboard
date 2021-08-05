@@ -9,3 +9,6 @@ high res grid but stateless, non-gradient bg =  21
 high res with opt.img grid but stateless, non-gradient bg = 9.4
 high res with max height grid but stateless, non-gradient bg = 9.4
 
+# Memory test (RSS in MB)
+default image = 560
+image with maxHeightDiskCache 400 = 235.63

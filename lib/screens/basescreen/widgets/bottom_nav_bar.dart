@@ -19,6 +19,8 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
           selectedFontSize: SizeConfig.safeBlockHorizontal * 3,
           unselectedFontSize: SizeConfig.safeBlockHorizontal * 3,
           iconSize: SizeConfig.safeBlockHorizontal * 7.5,
+          selectedLabelStyle: Theme.of(context).textTheme.caption!.copyWith(fontWeight: FontWeight.w600),
+          unselectedLabelStyle: Theme.of(context).textTheme.caption!.copyWith(fontWeight: FontWeight.w600),
           items: [
             BottomNavigationBarItem(
                 icon: Icon(Icons.amp_stories_outlined), label: "Wallpapers"),

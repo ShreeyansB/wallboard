@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:wall/controllers/database_controller.dart';
 import 'package:wall/controllers/navigation_controller.dart';
 import 'package:wall/dev_settings.dart';
 import 'package:wall/screens/basescreen/base_screen.dart';
 
-void main() {
+void main() async {
   Paint.enableDithering = true;
+  await GetStorage.init();
   runApp(MyApp());
 }
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
     Get.put(DatabaseController());
     Get.put(NavController());
 
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.light,
             accentColor: Colors.deepPurpleAccent.shade400,
             backgroundColor: kBgColorLight),
-        textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme),
+        textTheme: kBaseTextTheme(ThemeData.light().textTheme),
         scaffoldBackgroundColor: kBgColorLight,
       ),
       darkTheme: ThemeData(
@@ -52,21 +53,23 @@ class MyApp extends StatelessWidget {
               background: kBgColorDark,
               onBackground: Colors.white,
               secondary: Color(0xff372e61)),
-          textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
+          textTheme: kBaseTextTheme(ThemeData.dark().textTheme),
           scaffoldBackgroundColor: kBgColorDark,
           tooltipTheme: TooltipThemeData(
-              textStyle: GoogleFonts.inter(color: Colors.white),
+              textStyle: kBaseTextStyle(color: Colors.white),
               decoration: BoxDecoration(
                 color: Colors.black54,
                 borderRadius: BorderRadius.circular(10),
               )),
+          appBarTheme: ThemeData.dark()
+              .appBarTheme
+              .copyWith(textTheme: kBaseTextTheme(ThemeData.dark().textTheme)),
           bottomNavigationBarTheme: BottomNavigationBarThemeData(
             backgroundColor: kAppbarColorDark,
             elevation: 0,
             type: BottomNavigationBarType.fixed,
-            selectedLabelStyle: GoogleFonts.inter(fontWeight: FontWeight.w500),
-            unselectedLabelStyle:
-                GoogleFonts.inter(fontWeight: FontWeight.w500),
+            selectedLabelStyle: kBaseTextStyle(fontWeight: FontWeight.w500),
+            unselectedLabelStyle: kBaseTextStyle(fontWeight: FontWeight.w500),
             selectedItemColor: Colors.deepPurpleAccent.shade100,
             unselectedItemColor: Colors.white,
           ),
@@ -74,7 +77,32 @@ class MyApp extends StatelessWidget {
                 thumbColor: MaterialStateProperty.all(Colors.white12),
                 trackColor: MaterialStateProperty.all(Colors.white54),
               )),
+      customTransition: MyScaleTransition(),
+      transitionDuration: Duration(milliseconds: 300),
+
       home: HomePage(),
+    );
+  }
+}
+
+class MyScaleTransition extends CustomTransition {
+  @override
+  Widget buildTransition(
+      BuildContext context,
+      Curve? curve,
+      Alignment? alignment,
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child) {
+    return Align(
+      alignment: Alignment.center,
+      child: FadeTransition(
+        opacity: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOut,
+        ),
+        child: child,
+      ),
     );
   }
 }

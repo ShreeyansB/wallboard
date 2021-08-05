@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // BASE SETTINGS
 
@@ -15,11 +16,15 @@ const Color kAppbarColorDark = Color(0xff0B0A1F);
 const Color kBottombarColorLight = Color(0xfff6e6ff);
 const Color kBottombarColorDark = Color(0xff0B0A1F);
 
+var kBaseTextTheme = GoogleFonts.robotoMonoTextTheme;
+var kBaseTextStyle = GoogleFonts.roboto;
+Color kLikeButtonColor = Colors.red.shade600;
+
 // WALLPAPER SCREEN SETTINGS
 
 // Wallpaper Tile Settings
 const double kBorderRadius = 4;
-const double kBlurAmount = 0;
+const double kBlurAmount = 10;
 
 const double kGridViewPadding = 5;
 const double kGridSpacing = 4.3;
@@ -28,7 +33,7 @@ const int kGridCount = 2;
 
 const double kBannerHeight = 8;
 const double kBorderRadiusTop = 0;
-const double kBorderRadiusBottom = 4; 
+const double kBorderRadiusBottom = 4;
 const Alignment kBannerAlignment = Alignment.bottomCenter;
 const Color kBannerColor = Colors.black26;
 const Color kBannerTitleColor = Colors.white;

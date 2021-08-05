@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:wall/controllers/database_controller.dart';
 import 'package:wall/controllers/navigation_controller.dart';
+import 'package:wall/controllers/slide_controller.dart';
 import 'package:wall/dev_settings.dart';
 import 'package:wall/screens/basescreen/base_screen.dart';
 
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
 
     Get.put(DatabaseController());
     Get.put(NavController());
+    Get.put(SlideController());
 
     return GetMaterialApp(
       title: 'Flutter Demo',
@@ -79,7 +81,6 @@ class MyApp extends StatelessWidget {
               )),
       customTransition: MyScaleTransition(),
       transitionDuration: Duration(milliseconds: 300),
-
       home: HomePage(),
     );
   }

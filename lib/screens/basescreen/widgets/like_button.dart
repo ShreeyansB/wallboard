@@ -21,8 +21,6 @@ class _LikeButtonState extends State<LikeButton>
     with SingleTickerProviderStateMixin {
   bool allowAnimation = true;
   late bool isEnabled;
-  String unliked = "\uEE0F";
-  String liked = "\uEE0E";
 
   late RxString data = "".obs;
 
@@ -34,7 +32,9 @@ class _LikeButtonState extends State<LikeButton>
   void initState() {
     super.initState();
     isEnabled = dbController.favorites.contains(widget.url);
-    data.value = dbController.favorites.contains(widget.url) ? liked : unliked;
+    data.value = dbController.favorites.contains(widget.url)
+        ? kFavoriteIcon
+        : kNonFavoriteIcon;
 
     _controller = AnimationController(
       vsync: this,
@@ -62,6 +62,7 @@ class _LikeButtonState extends State<LikeButton>
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      splashFactory: context.theme.splashFactory,
       borderRadius: BorderRadius.circular(100),
       onTap: () {
         if (allowAnimation) {
@@ -74,8 +75,9 @@ class _LikeButtonState extends State<LikeButton>
             isEnabled ? _controller.forward() : _controller.reverse();
             Future.delayed(Duration(milliseconds: widget.duration ~/ 1.5))
                 .then((value) => allowAnimation = true);
-            Future.delayed(Duration(milliseconds: widget.duration ~/ 6))
-                .then((value) => data.value = isEnabled ? liked : unliked);
+            Future.delayed(Duration(milliseconds: widget.duration ~/ 6)).then(
+                (value) =>
+                    data.value = isEnabled ? kFavoriteIcon : kNonFavoriteIcon);
           });
         }
       },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wall/controllers/navigation_controller.dart';
+import 'package:wall/dev_settings.dart';
 import 'package:wall/utils/size_config.dart';
 
 class MyBottomNavBar extends StatefulWidget {
@@ -19,15 +20,54 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
           selectedFontSize: SizeConfig.safeBlockHorizontal * 3,
           unselectedFontSize: SizeConfig.safeBlockHorizontal * 3,
           iconSize: SizeConfig.safeBlockHorizontal * 7.5,
-          selectedLabelStyle: Theme.of(context).textTheme.caption!.copyWith(fontWeight: FontWeight.w600),
-          unselectedLabelStyle: Theme.of(context).textTheme.caption!.copyWith(fontWeight: FontWeight.w600),
+          selectedLabelStyle: Theme.of(context)
+              .textTheme
+              .caption!
+              .copyWith(fontWeight: FontWeight.w600),
+          unselectedLabelStyle: Theme.of(context)
+              .textTheme
+              .caption!
+              .copyWith(fontWeight: FontWeight.w600),
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.amp_stories_outlined), label: "Wallpapers"),
+                icon: Text(
+                  kWallpapersNavIcon,
+                  style: TextStyle(
+                      fontFamily: "RemixIcons",
+                      color: navController.navIndex.value == 0
+                          ? context
+                              .theme.bottomNavigationBarTheme.selectedItemColor
+                          : context.theme.bottomNavigationBarTheme
+                              .unselectedItemColor,
+                      fontSize: SizeConfig.safeBlockHorizontal * 8),
+                ),
+                label: "Wallpapers"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.all_inbox_outlined), label: "Collections"),
+                icon: Text(
+                  kCollectionsNavIcon,
+                  style: TextStyle(
+                      fontFamily: "RemixIcons",
+                      color: navController.navIndex.value == 1
+                          ? context
+                              .theme.bottomNavigationBarTheme.selectedItemColor
+                          : context.theme.bottomNavigationBarTheme
+                              .unselectedItemColor,
+                      fontSize: SizeConfig.safeBlockHorizontal * 8),
+                ),
+                label: "Collections"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.favorite_border_rounded), label: "Favorites"),
+                icon: Text(
+                  kFavoritesNavIcon,
+                  style: TextStyle(
+                      fontFamily: "RemixIcons",
+                      color: navController.navIndex.value == 2
+                          ? context
+                              .theme.bottomNavigationBarTheme.selectedItemColor
+                          : context.theme.bottomNavigationBarTheme
+                              .unselectedItemColor,
+                      fontSize: SizeConfig.safeBlockHorizontal * 8),
+                ),
+                label: "Favorites"),
           ],
           currentIndex: navController.navIndex.value,
           onTap: (value) {

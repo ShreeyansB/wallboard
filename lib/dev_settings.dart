@@ -17,23 +17,23 @@ const Color kBottombarColorLight = Color(0xfff6e6ff);
 const Color kBottombarColorDark = Color(0xff0B0A1F);
 
 var kBaseTextTheme = GoogleFonts.robotoMonoTextTheme;
-var kBaseTextStyle = GoogleFonts.roboto;
+var kBaseTextStyle = GoogleFonts.robotoMono;
 Color kLikeButtonColor = Colors.red.shade600;
 
 // WALLPAPER SCREEN SETTINGS
 
 // Wallpaper Tile Settings
-const double kBorderRadius = 4;
-const double kBlurAmount = 0;
+const double kBorderRadius = 2;
+const double kBlurAmount = 10;
 
-const double kGridViewPadding = 5;
-const double kGridSpacing = 4.3;
+const double kGridViewPadding = 3;
+const double kGridSpacing = 3;
 const double kGridAspectRatio = 0.7;
 const int kGridCount = 2;
 
 const double kBannerHeight = 8;
 const double kBorderRadiusTop = 0;
-const double kBorderRadiusBottom = 4;
+const double kBorderRadiusBottom = 2;
 const Alignment kBannerAlignment = Alignment.bottomCenter;
 const Color kBannerColor = Colors.black26;
 const Color kBannerTitleColor = Colors.white;
@@ -52,7 +52,7 @@ const String kFavoritesNavIcon = "\uEE09";
 const String kFavoriteIcon = "\uEE0E";
 const String kNonFavoriteIcon = "\uEE0F";
 const String kNoFavoritesBGIcon = "\uEC3C";
-const String kSetWallpaperIcon = "\uEE48";
+const String kSetWallpaperIcon = "\uEE4B";
 const String kDownloadIcon = "\uEC54";
 const String kInfoIcon = "\uEE59";
 const String kSearchIcon = "\uF0CD";

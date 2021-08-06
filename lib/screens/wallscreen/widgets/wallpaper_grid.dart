@@ -229,36 +229,44 @@ class WallImage extends StatelessWidget {
                           children: [
                             Expanded(
                               flex: 11,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Hero(
-                                    tag: ctrl.wallpapers[index].url,
-                                    child: Text(
+                              child: Hero(
+                                tag: ctrl.wallpapers[index].url,
+                                flightShuttleBuilder: (flightContext,
+                                        animation,
+                                        flightDirection,
+                                        fromHeroContext,
+                                        toHeroContext) =>
+                                    DefaultTextStyle(
+                                        style: kBaseTextStyle(),
+                                        maxLines: 1,
+                                        child: toHeroContext.widget),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
                                       ctrl.wallpapers[index].name,
                                       style: TextStyle(
-                                        color: kBannerTitleColor,
-                                        fontSize:
-                                            SizeConfig.safeBlockHorizontal *
-                                                kBannerTitleSize,
-                                        fontWeight: FontWeight.w600,
-                                        decoration: TextDecoration.none
-                                      ),
-                                    ),
-                                  ),
-                                  if (kShowAuthor)
-                                    Text(
-                                      "by ${ctrl.wallpapers[index].author ?? kNullAuthorName}",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w400,
-                                          color: kBannerAuthorColor,
+                                          color: kBannerTitleColor,
                                           fontSize:
                                               SizeConfig.safeBlockHorizontal *
-                                                  kBannerAuthorSize),
+                                                  kBannerTitleSize,
+                                          fontWeight: FontWeight.w600,
+                                          decoration: TextDecoration.none),
                                     ),
-                                ],
+                                    if (kShowAuthor)
+                                      Text(
+                                        "by ${ctrl.wallpapers[index].author ?? kNullAuthorName}",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: kBannerAuthorColor,
+                                            fontSize:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    kBannerAuthorSize),
+                                      ),
+                                  ],
+                                ),
                               ),
                             ),
                             Expanded(

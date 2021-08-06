@@ -56,6 +56,8 @@ class MyApp extends StatelessWidget {
               onBackground: Colors.white,
               secondary: Color(0xff372e61)),
           textTheme: kBaseTextTheme(ThemeData.dark().textTheme),
+          accentTextTheme: kBaseTextTheme(ThemeData.dark().accentTextTheme),
+          primaryTextTheme: kBaseTextTheme(ThemeData.dark().primaryTextTheme),
           scaffoldBackgroundColor: kBgColorDark,
           tooltipTheme: TooltipThemeData(
               textStyle: kBaseTextStyle(color: Colors.white),

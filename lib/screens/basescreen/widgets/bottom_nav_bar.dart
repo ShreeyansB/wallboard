@@ -39,7 +39,7 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
                               .theme.bottomNavigationBarTheme.selectedItemColor
                           : context.theme.bottomNavigationBarTheme
                               .unselectedItemColor,
-                      fontSize: SizeConfig.safeBlockHorizontal * 8),
+                      fontSize: SizeConfig.safeBlockHorizontal * 7.3),
                 ),
                 label: "Wallpapers"),
             BottomNavigationBarItem(
@@ -52,7 +52,7 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
                               .theme.bottomNavigationBarTheme.selectedItemColor
                           : context.theme.bottomNavigationBarTheme
                               .unselectedItemColor,
-                      fontSize: SizeConfig.safeBlockHorizontal * 8),
+                      fontSize: SizeConfig.safeBlockHorizontal * 7.3),
                 ),
                 label: "Collections"),
             BottomNavigationBarItem(
@@ -65,7 +65,7 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
                               .theme.bottomNavigationBarTheme.selectedItemColor
                           : context.theme.bottomNavigationBarTheme
                               .unselectedItemColor,
-                      fontSize: SizeConfig.safeBlockHorizontal * 8),
+                      fontSize: SizeConfig.safeBlockHorizontal * 7.3),
                 ),
                 label: "Favorites"),
           ],

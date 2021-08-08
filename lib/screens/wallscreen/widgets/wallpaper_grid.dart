@@ -3,6 +3,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wall/controllers/database_controller.dart';
+import 'package:wall/controllers/palette_controller.dart';
+import 'package:wall/controllers/slide_controller.dart';
 import 'package:wall/dev_settings.dart';
 import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
 import 'package:wall/screens/basescreen/widgets/image_viewer.dart';
@@ -168,6 +170,8 @@ class WallImage extends StatelessWidget {
                 Get.to(() => ImageViewer(wall: ctrl.wallpapers[index]))!
                     .then((value) {
                   Get.find<DatabaseController>().update(["like"]);
+                  Get.find<PaletteController>().colors = [];
+                  Get.find<SlideController>().showInfo.value = false;
                 });
               },
             ),

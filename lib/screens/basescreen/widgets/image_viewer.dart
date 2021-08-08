@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:wall/controllers/palette_controller.dart';
 import 'package:wall/controllers/slide_controller.dart';
 import 'package:wall/dev_settings.dart';
 import 'package:wall/models/wallpaper_model.dart';
@@ -47,8 +49,8 @@ class _ImageViewerState extends State<ImageViewer>
 
   late AnimationController _animationController;
   late Animation<Matrix4> _animation;
-  PaletteGenerator? palette;
 
+  var paletteCtrlr = Get.find<PaletteController>();
   SlideController slideController = Get.find<SlideController>();
 
   void _handleDoubleTapDown(TapDownDetails details) {
@@ -85,26 +87,31 @@ class _ImageViewerState extends State<ImageViewer>
     )..addListener(() {
         _transformationController.value = _animation.value;
       });
+    bool isCached = false;
+    for (var i = 0; i < paletteCtrlr.cachedColors.length; i++) {
+      if (paletteCtrlr.cachedColors[i]["url"] == widget.wall.url) {
+        paletteCtrlr.getFromCache(widget.wall);
+        isCached = true;
+        break;
+      }
+    }
+    if (!isCached) updatePalette();
   }
 
-  Future<PaletteGenerator?> updatePalette() async {
+  void updatePalette() async {
     var cache = DefaultCacheManager();
     File file = await cache.getSingleFile(widget.wall.url);
-    // Image img = Image.file(file);
-    // ui.Image image = await load(file);
-    List<int> data;
     var port = ReceivePort();
-    port.listen((msg) {
-      data = msg;
-      data.forEach((element) => print(Color(element)));
-    });
     var isolate = await FlutterIsolate.spawn(
       computePalette,
       [file.readAsBytesSync(), port.sendPort],
     );
-    print("poo");
-    // isolate.kill();
-    return null;
+    port.listen((msg) {
+      List<int> data = msg;
+      paletteCtrlr.addColors(data, widget.wall);
+      isolate.kill();
+      port.close();
+    });
   }
 
   Future<ui.Image> load(File file) async {
@@ -222,15 +229,7 @@ class _ImageViewerState extends State<ImageViewer>
                 crossFadeState: slideController.show.value
                     ? CrossFadeState.showFirst
                     : CrossFadeState.showSecond,
-                firstChild: FutureBuilder<PaletteGenerator?>(
-                    future: updatePalette(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData)
-                        return MyBottomSheet(
-                            wall: widget.wall, palette: snapshot.data);
-
-                      return LinearProgressIndicator();
-                    }),
+                firstChild: MyBottomSheet(wall: widget.wall),
                 secondChild: SizedBox(
                   width: double.infinity,
                 ),
@@ -306,16 +305,16 @@ class _MyAppBarState extends State<MyAppBar>
 }
 
 class MyBottomSheet extends StatefulWidget {
-  const MyBottomSheet({Key? key, required this.wall, required this.palette})
-      : super(key: key);
+  const MyBottomSheet({Key? key, required this.wall}) : super(key: key);
 
   final WallpaperModel wall;
-  final PaletteGenerator? palette;
   @override
   _MyBottomSheetState createState() => _MyBottomSheetState();
 }
 
 class _MyBottomSheetState extends State<MyBottomSheet> {
+  SlideController slideController = Get.find<SlideController>();
+
   @override
   Widget build(BuildContext context) {
     return ConditionalParentWidget(
@@ -336,7 +335,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
             left: SizeConfig.safeBlockHorizontal * 10,
             right: SizeConfig.safeBlockHorizontal * 10,
             top: SizeConfig.safeBlockVertical * 3,
-            bottom: SizeConfig.safeBlockVertical * 14),
+            bottom: SizeConfig.safeBlockVertical * 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -425,10 +424,21 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
             SizedBox(
               height: SizeConfig.safeBlockVertical * 4,
             ),
-            PaletteGrid(
-              wall: widget.wall,
-              palette: widget.palette,
-            )
+            Obx(() => AnimatedCrossFade(
+                  sizeCurve: Curves.easeInToLinear,
+                  firstCurve: Curves.easeOutCubic,
+                  secondCurve: Curves.easeOutCubic,
+                  duration: Duration(milliseconds: 300),
+                  reverseDuration: Duration(milliseconds: 300),
+                  crossFadeState: slideController.showInfo.value
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  firstChild: PaletteGrid(
+                    wall: widget.wall,
+                  ),
+                  secondChild: Container(
+                  ),
+                ))
           ],
         ),
       ),
@@ -480,6 +490,11 @@ class SheetButtonGrid extends StatelessWidget {
         "setWallpaper", {"uri": file.path}).then((value) => print(value));
   }
 
+  void togglePalette() {
+    Get.find<SlideController>().showInfo.value =
+        !Get.find<SlideController>().showInfo.value;
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> widgets = [
@@ -489,18 +504,22 @@ class SheetButtonGrid extends StatelessWidget {
         onPressed: () => saveWallpaper(wall),
       ),
       SheetButton(
-        icon: kSetWallpaperIcon,
+        icon: kFavoriteIcon,
         caption: "Favorite",
         widget: LikeButtonBG(
             url: wall.url,
-            size: SizeConfig.safeBlockVertical * 3.4,
+            size: SizeConfig.safeBlockHorizontal * 6,
             duration: 500),
       ),
       SheetButton(
           icon: kSetWallpaperIcon,
           caption: "Set",
           onPressed: () => setWallpaper(wall)),
-      SheetButton(icon: kInfoIcon, caption: "Info"),
+      SheetButton(
+        icon: kInfoIcon,
+        caption: "Info",
+        onPressed: () => togglePalette(),
+      ),
     ];
 
     return Row(
@@ -572,83 +591,133 @@ class SheetButton extends StatelessWidget {
 }
 
 class PaletteGrid extends StatefulWidget {
-  const PaletteGrid({Key? key, required this.wall, required this.palette})
-      : super(key: key);
+  const PaletteGrid({Key? key, required this.wall}) : super(key: key);
 
   final WallpaperModel wall;
-  final PaletteGenerator? palette;
 
   @override
   _PaletteGridState createState() => _PaletteGridState();
 }
 
 class _PaletteGridState extends State<PaletteGrid> {
+  var paletteCtrlr = Get.find<PaletteController>();
+
   @override
   Widget build(BuildContext context) {
-    var data = widget.palette?.colors.toList() ?? [];
-    for (var i = 0; i < 7; i++) data.add(Colors.grey);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return GetBuilder<PaletteController>(builder: (ctrlr) {
+      var data = ctrlr.colors.toList();
+      // for (var i = 0; i < 7; i++) data.add(Colors.white);
+      if (data.isNotEmpty)
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ColorPaletteButton(color: data[0]),
-            ColorPaletteButton(color: data[1]),
-            ColorPaletteButton(color: data[2]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ColorPaletteButton(color: data[0]),
+                ColorPaletteButton(color: data[1]),
+                ColorPaletteButton(color: data[2]),
+              ],
+            ),
+            SizedBox(
+              height: SizeConfig.safeBlockVertical * 2,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ColorPaletteButton(color: data[3]),
+                ColorPaletteButton(color: data[4]),
+                ColorPaletteButton(color: data[5]),
+              ],
+            ),
           ],
-        ),
-        SizedBox(
-          height: SizeConfig.safeBlockVertical * 2,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ColorPaletteButton(color: data[3]),
-            ColorPaletteButton(color: data[4]),
-            ColorPaletteButton(color: data[5]),
-          ],
-        ),
-      ],
-    );
+        );
+      else
+        return LinearProgressIndicator(
+          backgroundColor: Colors.transparent,
+        );
+    });
   }
 }
 
 class ColorPaletteButton extends StatelessWidget {
-  const ColorPaletteButton({Key? key, required this.color}) : super(key: key);
+  ColorPaletteButton({Key? key, required this.color}) : super(key: key);
 
-  final Color? color;
+  final Color color;
 
   String colorToString(Color? c) {
     Color color = c ?? Colors.grey;
     String colorString = color.toString();
     String valueString = colorString.split('(0xff')[1].split(')')[0];
-    return "#$valueString";
+    return "#${valueString.toUpperCase()}";
   }
+
+  Color getTextColor(Color color) {
+    double darkness =
+        (0.299 * color.red + 0.587 * color.green + 0.114 * color.blue);
+    if (darkness > 160)
+      return Colors.black87;
+    else
+      return Colors.white70;
+  }
+
+  final GlobalKey _toolTipKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      style: ButtonStyle(
-        overlayColor: MaterialStateProperty.all(Colors.white24),
-        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-                SizeConfig.safeBlockHorizontal * kBorderRadius))),
-        foregroundColor:
-            MaterialStateProperty.all(context.theme.textTheme.headline6!.color),
-        backgroundColor: MaterialStateProperty.all(color),
-      ),
-      onPressed: () {
-        print("poo");
-        Clipboard.setData(ClipboardData(text: colorToString(color)));
-      },
-      child: Padding(
-        padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal * 2),
-        child: Text(
-          colorToString(color),
-          style: TextStyle(shadows: []),
+    return Tooltip(
+      key: _toolTipKey,
+      message: "Copied to clipboard",
+      child: TextButton(
+        style: ButtonStyle(
+          overlayColor: MaterialStateProperty.all(Colors.white24),
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                  SizeConfig.safeBlockHorizontal * kBorderRadius))),
+          foregroundColor: MaterialStateProperty.all(
+              context.theme.textTheme.headline6!.color),
+          backgroundColor: MaterialStateProperty.all(color),
+        ),
+        onPressed: () {
+          final dynamic _toolTip = _toolTipKey.currentState;
+          _toolTip.ensureTooltipVisible();
+          Timer(Duration(milliseconds: 2000), () => _toolTip?.deactivate());
+          Clipboard.setData(ClipboardData(text: colorToString(color)));
+        },
+        child: Padding(
+          padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal * 2),
+          child: Text(
+            colorToString(color),
+            style: TextStyle(color: getTextColor(color), fontWeight: FontWeight.bold),
+          ),
         ),
       ),
     );
+  }
+}
+
+class MyTooltip extends StatelessWidget {
+  final Widget child;
+  final String message;
+
+  MyTooltip({required this.message, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final key = GlobalKey<State<Tooltip>>();
+    return Tooltip(
+      key: key,
+      message: message,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => _onTap(key),
+        child: child,
+      ),
+    );
+  }
+
+  void _onTap(GlobalKey key) {
+    final dynamic tooltip = key.currentState;
+    tooltip?.ensureTooltipVisible();
   }
 }

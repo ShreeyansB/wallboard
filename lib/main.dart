@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:wall/controllers/database_controller.dart';
 import 'package:wall/controllers/navigation_controller.dart';
+import 'package:wall/controllers/palette_controller.dart';
 import 'package:wall/controllers/slide_controller.dart';
 import 'package:wall/dev_settings.dart';
 import 'package:wall/screens/basescreen/base_screen.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
     Get.put(DatabaseController());
     Get.put(NavController());
     Get.put(SlideController());
+    Get.put(PaletteController());
 
     return GetMaterialApp(
       title: 'Flutter Demo',

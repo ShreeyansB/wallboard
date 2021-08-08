@@ -1,14 +1,9 @@
-import 'dart:io';
 import 'dart:ui';
-import 'package:path/path.dart' as p;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:wall/controllers/database_controller.dart';
 import 'package:wall/dev_settings.dart';
-import 'package:wall/models/wallpaper_model.dart';
 import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
 import 'package:wall/screens/basescreen/widgets/image_viewer.dart';
 import 'package:wall/screens/basescreen/widgets/like_button.dart';
@@ -65,8 +60,8 @@ class _WallGridState extends State<WallGrid> {
               mainAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing),
           itemBuilder: (context, index) {
             return CachedNetworkImage(
-              maxHeightDiskCache: MediaQuery.of(context).size.height ~/ 2.4,
-              memCacheHeight: MediaQuery.of(context).size.height ~/ 2.4,
+              maxHeightDiskCache: MediaQuery.of(context).size.height ~/ 3.5,
+              memCacheHeight: MediaQuery.of(context).size.height ~/ 3.5,
               imageUrl: ctrl.wallpapers[index].url,
               imageBuilder: (context, imageProvider) {
                 return WallImage(
@@ -144,19 +139,6 @@ class WallImage extends StatelessWidget {
   final DatabaseController ctrl;
   final int index;
 
-  void saveFile(WallpaperModel image) async {
-    final cache = DefaultCacheManager();
-    final file = await cache.getSingleFile(image.url);
-    Directory appDocumentsDirectory = await getExternalStorageDirectory() ??
-        await getApplicationDocumentsDirectory(); // TODO: Implement IOS File Visibility
-    String appDocumentsPath = appDocumentsDirectory.path;
-    print(appDocumentsPath);
-    File savedFile = File(appDocumentsPath +
-        "/${image.name}-${image.author}${p.extension(file.path)}");
-    savedFile.writeAsBytesSync(file.readAsBytesSync());
-    print("Done");
-  }
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -183,11 +165,10 @@ class WallImage extends StatelessWidget {
               borderRadius: BorderRadius.circular(
                   SizeConfig.safeBlockHorizontal * kBorderRadius),
               onTap: () async {
-                Get.to(() => ImageViewer(wall: ctrl.wallpapers[index]));
-                // saveFile(ctrl.wallpapers[index]);
-                // ScaffoldMessenger.of(context)
-                //     .showSnackBar(SnackBar(content: Text("Saved to storage")));
-                // platform.invokeMethod("setWallpaper", {"uri": path});
+                Get.to(() => ImageViewer(wall: ctrl.wallpapers[index]))!
+                    .then((value) {
+                  Get.find<DatabaseController>().update(["like"]);
+                });
               },
             ),
           ),

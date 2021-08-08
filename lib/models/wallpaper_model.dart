@@ -32,7 +32,7 @@ class WallpaperModel {
           dimensions: json['dimensions'],
           downloadable: json['downloadable'],
           license: json['license']);
-      if (result.downloadable! is bool) result.downloadable = true;
+      if (result.downloadable! is !bool) result.downloadable = true;
       return result;
     } else {
       return null;

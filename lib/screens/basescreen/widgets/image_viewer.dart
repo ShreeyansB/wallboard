@@ -1,13 +1,19 @@
-import 'dart:ui';
-
+import 'dart:io';
+import 'dart:ui' as ui;
+import 'package:flutter/services.dart';
+import 'package:path/path.dart' as p;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:wall/controllers/slide_controller.dart';
 import 'package:wall/dev_settings.dart';
 import 'package:wall/models/wallpaper_model.dart';
 import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
+import 'package:wall/screens/basescreen/widgets/like_button.dart';
 import 'package:wall/utils/size_config.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 class ImageViewer extends StatefulWidget {
   const ImageViewer({Key? key, required this.wall}) : super(key: key);
@@ -24,6 +30,7 @@ class _ImageViewerState extends State<ImageViewer>
 
   late AnimationController _animationController;
   late Animation<Matrix4> _animation;
+  PaletteGenerator? palette;
 
   SlideController slideController = Get.find<SlideController>();
 
@@ -55,13 +62,30 @@ class _ImageViewerState extends State<ImageViewer>
   @override
   void initState() {
     super.initState();
-
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 200),
     )..addListener(() {
         _transformationController.value = _animation.value;
       });
+  }
+
+  Future<PaletteGenerator?> updatePalette() async {
+    var cache = DefaultCacheManager();
+    File file = await cache.getSingleFile(widget.wall.url);
+    ui.Image image = await load(file);
+    palette = await PaletteGenerator.fromImage(
+      image,
+      maximumColorCount: 7,
+    );
+    return palette;
+  }
+
+  Future<ui.Image> load(File file) async {
+    var data = await file.readAsBytes();
+    ui.Codec codec = await ui.instantiateImageCodec(data);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return fi.image;
   }
 
   @override
@@ -134,6 +158,8 @@ class _ImageViewerState extends State<ImageViewer>
               onDoubleTapDown: _handleDoubleTapDown,
               child: CachedNetworkImage(
                 imageUrl: widget.wall.url,
+                maxHeightDiskCache: MediaQuery.of(context).size.height ~/ 0.8,
+                memCacheHeight: MediaQuery.of(context).size.height ~/ 0.8,
                 imageBuilder: (context, imageProvider) {
                   return Container(
                     height: Get.height,
@@ -170,9 +196,15 @@ class _ImageViewerState extends State<ImageViewer>
                 crossFadeState: slideController.show.value
                     ? CrossFadeState.showFirst
                     : CrossFadeState.showSecond,
-                firstChild: MyBottomSheet(
-                  wall: widget.wall,
-                ),
+                firstChild: FutureBuilder<PaletteGenerator?>(
+                    future: updatePalette(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData)
+                        return MyBottomSheet(
+                            wall: widget.wall, palette: snapshot.data);
+
+                      return LinearProgressIndicator();
+                    }),
                 secondChild: SizedBox(
                   width: double.infinity,
                 ),
@@ -229,7 +261,7 @@ class _MyAppBarState extends State<MyAppBar>
             condition: kBlurAmount != 0,
             conditionalBuilder: (child) => ClipRect(
               child: BackdropFilter(
-                filter: ImageFilter.blur(
+                filter: ui.ImageFilter.blur(
                     sigmaX: kBlurAmount,
                     sigmaY: kBlurAmount,
                     tileMode: TileMode.decal),
@@ -248,9 +280,11 @@ class _MyAppBarState extends State<MyAppBar>
 }
 
 class MyBottomSheet extends StatefulWidget {
-  const MyBottomSheet({Key? key, required this.wall}) : super(key: key);
+  const MyBottomSheet({Key? key, required this.wall, required this.palette})
+      : super(key: key);
 
   final WallpaperModel wall;
+  final PaletteGenerator? palette;
   @override
   _MyBottomSheetState createState() => _MyBottomSheetState();
 }
@@ -262,7 +296,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
       condition: kBlurAmount != 0,
       conditionalBuilder: (child) => ClipRect(
         child: BackdropFilter(
-          filter: ImageFilter.blur(
+          filter: ui.ImageFilter.blur(
               sigmaX: kBlurAmount,
               sigmaY: kBlurAmount,
               tileMode: TileMode.decal),
@@ -359,7 +393,16 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
             SizedBox(
               height: SizeConfig.safeBlockVertical * 4,
             ),
-            SheetButtonGrid(),
+            SheetButtonGrid(
+              wall: widget.wall,
+            ),
+            SizedBox(
+              height: SizeConfig.safeBlockVertical * 4,
+            ),
+            PaletteGrid(
+              wall: widget.wall,
+              palette: widget.palette,
+            )
           ],
         ),
       ),
@@ -368,17 +411,72 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
 }
 
 class SheetButtonGrid extends StatelessWidget {
-  SheetButtonGrid({Key? key}) : super(key: key);
+  SheetButtonGrid({
+    Key? key,
+    required this.wall,
+  }) : super(key: key);
 
-  final List<Widget> widgets = [
-    SheetButton(icon: kDownloadIcon, caption: "Download"),
-    SheetButton(icon: kFavoriteIcon, caption: "Favorite"),
-    SheetButton(icon: kSetWallpaperIcon, caption: "Set"),
-    SheetButton(icon: kInfoIcon, caption: "Info"),
-  ];
+  final WallpaperModel wall;
+  static const platform = MethodChannel('com.ballistic/wallpaper');
+
+  void saveWallpaper(WallpaperModel wall) async {
+    if (wall.downloadable ?? true) {
+      final cache = DefaultCacheManager();
+      final file = await cache.getSingleFile(wall.url);
+      Directory appDocumentsDirectory = await getExternalStorageDirectory() ??
+          await getApplicationDocumentsDirectory(); // TODO: Implement IOS File Visibility
+      String appDocumentsPath = appDocumentsDirectory.path;
+      File savedFile = File(appDocumentsPath +
+          "/${wall.name}-${wall.author}${p.extension(file.path)}");
+      savedFile.writeAsBytesSync(file.readAsBytesSync());
+      Get.showSnackbar(GetBar(
+        message: "Saved to $appDocumentsPath",
+        backgroundColor: Get.theme.scaffoldBackgroundColor,
+        duration: Duration(seconds: 3),
+        animationDuration: Duration(milliseconds: 300),
+        icon: Icon(Icons.download_done_rounded),
+      ));
+    } else {
+      Get.showSnackbar(GetBar(
+        message: "Wallpaper is not Downloadable",
+        backgroundColor: Get.theme.scaffoldBackgroundColor,
+        duration: Duration(seconds: 3),
+        animationDuration: Duration(milliseconds: 300),
+        icon: Icon(Icons.report_outlined),
+      ));
+    }
+  }
+
+  void setWallpaper(WallpaperModel wall) async {
+    var cache = DefaultCacheManager();
+    File file = await cache.getSingleFile(wall.url);
+    platform.invokeMethod(
+        "setWallpaper", {"uri": file.path}).then((value) => print(value));
+  }
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> widgets = [
+      SheetButton(
+        icon: kDownloadIcon,
+        caption: "Download",
+        onPressed: () => saveWallpaper(wall),
+      ),
+      SheetButton(
+        icon: kSetWallpaperIcon,
+        caption: "Favorite",
+        widget: LikeButtonBG(
+            url: wall.url,
+            size: SizeConfig.safeBlockVertical * 3.4,
+            duration: 500),
+      ),
+      SheetButton(
+          icon: kSetWallpaperIcon,
+          caption: "Set",
+          onPressed: () => setWallpaper(wall)),
+      SheetButton(icon: kInfoIcon, caption: "Info"),
+    ];
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: widgets,
@@ -410,24 +508,27 @@ class SheetButton extends StatelessWidget {
               SizeConfig.safeBlockHorizontal * kBorderRadius),
           child: Material(
             type: MaterialType.transparency,
-            child: InkWell(
-              onTap: onPressed ?? () => print("Boo"),
-              splashFactory: context.theme.splashFactory,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: kBannerTitleColor.withOpacity(0.27),
-                    borderRadius: BorderRadius.circular(
-                        SizeConfig.safeBlockHorizontal * kBorderRadius)),
-                padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal * 3),
-                child: Text(
-                  icon,
-                  style: context.theme.textTheme.headline6!.copyWith(
-                      fontFamily: "RemixIcons",
-                      color: kBannerTitleColor,
-                      fontSize: SizeConfig.safeBlockHorizontal * 6),
-                ),
-              ),
-            ),
+            child: widget == null
+                ? InkWell(
+                    onTap: onPressed ?? () => print("Boo"),
+                    splashFactory: context.theme.splashFactory,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: kBannerTitleColor.withOpacity(0.27),
+                          borderRadius: BorderRadius.circular(
+                              SizeConfig.safeBlockHorizontal * kBorderRadius)),
+                      padding:
+                          EdgeInsets.all(SizeConfig.safeBlockHorizontal * 3),
+                      child: Text(
+                        icon,
+                        style: context.theme.textTheme.headline6!.copyWith(
+                            fontFamily: "RemixIcons",
+                            color: kBannerTitleColor,
+                            fontSize: SizeConfig.safeBlockHorizontal * 6),
+                      ),
+                    ),
+                  )
+                : widget,
           ),
         ),
         SizedBox(
@@ -440,6 +541,88 @@ class SheetButton extends StatelessWidget {
               fontSize: SizeConfig.safeBlockHorizontal * 2.7),
         ),
       ],
+    );
+  }
+}
+
+class PaletteGrid extends StatefulWidget {
+  const PaletteGrid({Key? key, required this.wall, required this.palette})
+      : super(key: key);
+
+  final WallpaperModel wall;
+  final PaletteGenerator? palette;
+
+  @override
+  _PaletteGridState createState() => _PaletteGridState();
+}
+
+class _PaletteGridState extends State<PaletteGrid> {
+  @override
+  Widget build(BuildContext context) {
+    var data = widget.palette?.colors.toList() ?? [];
+    for (var i = 0; i < 7; i++) data.add(Colors.grey);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ColorPaletteButton(color: data[0]),
+            ColorPaletteButton(color: data[1]),
+            ColorPaletteButton(color: data[2]),
+          ],
+        ),
+        SizedBox(
+          height: SizeConfig.safeBlockVertical * 2,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ColorPaletteButton(color: data[3]),
+            ColorPaletteButton(color: data[4]),
+            ColorPaletteButton(color: data[5]),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class ColorPaletteButton extends StatelessWidget {
+  const ColorPaletteButton({Key? key, required this.color}) : super(key: key);
+
+  final Color? color;
+
+  String colorToString(Color? c) {
+    Color color = c ?? Colors.grey;
+    String colorString = color.toString();
+    String valueString = colorString.split('(0xff')[1].split(')')[0];
+    return "#$valueString";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      style: ButtonStyle(
+        overlayColor: MaterialStateProperty.all(Colors.white24),
+        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                SizeConfig.safeBlockHorizontal * kBorderRadius))),
+        foregroundColor:
+            MaterialStateProperty.all(context.theme.textTheme.headline6!.color),
+        backgroundColor: MaterialStateProperty.all(color),
+      ),
+      onPressed: () {
+        print("poo");
+        Clipboard.setData(ClipboardData(text: colorToString(color)));
+      },
+      child: Padding(
+        padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal * 2),
+        child: Text(
+          colorToString(color),
+          style: TextStyle(shadows: []),
+        ),
+      ),
     );
   }
 }

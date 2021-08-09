@@ -3,7 +3,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wall/controllers/database_controller.dart';
+import 'package:wall/controllers/navigation_controller.dart';
 import 'package:wall/controllers/palette_controller.dart';
+import 'package:wall/controllers/search_controller.dart';
 import 'package:wall/controllers/slide_controller.dart';
 import 'package:wall/dev_settings.dart';
 import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
@@ -21,6 +23,7 @@ class WallGrid extends StatefulWidget {
 class _WallGridState extends State<WallGrid> {
   ScrollController _scrollController = ScrollController();
   var dbController = Get.find<DatabaseController>();
+  var searchController = Get.find<SearchController>();
 
   @override
   void initState() {
@@ -47,55 +50,78 @@ class _WallGridState extends State<WallGrid> {
         interactive: true,
         thickness: SizeConfig.safeBlockHorizontal * 2,
         radius: Radius.circular(SizeConfig.safeBlockHorizontal * 4),
-        child: GridView.builder(
-          controller: _scrollController,
-          scrollDirection: Axis.vertical,
-          itemCount: ctrl.wallpapers.length,
-          shrinkWrap: true,
-          cacheExtent: MediaQuery.of(context).size.height * 3,
-          padding:
-              EdgeInsets.all(SizeConfig.safeBlockHorizontal * kGridViewPadding),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              childAspectRatio: kGridAspectRatio,
-              crossAxisCount: kGridCount,
-              crossAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing,
-              mainAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing),
-          itemBuilder: (context, index) {
-            return CachedNetworkImage(
-              maxHeightDiskCache: MediaQuery.of(context).size.height ~/ 3.5,
-              memCacheHeight: MediaQuery.of(context).size.height ~/ 3.5,
-              imageUrl: ctrl.wallpapers[index].url,
-              imageBuilder: (context, imageProvider) {
-                return WallImage(
-                  imageProvider: imageProvider,
-                  index: index,
-                  ctrl: ctrl,
-                  kBorderRadius: kBorderRadius,
-                  kBorderRadiusTop: kBorderRadiusTop,
-                  kBorderRadiusBottom: kBorderRadiusBottom,
-                  kBannerHeight: kBannerHeight,
-                  kBlurAmount: kBlurAmount,
-                  kBannerColor: kBannerColor,
-                  kBannerPadding: kBannerPadding,
-                  kBannerTitleColor: kBannerTitleColor,
-                  kBannerTitleSize: kBannerTitleSize,
-                  kShowAuthor: kShowAuthor,
-                  kNullAuthorName: kNullAuthorName,
-                  kBannerAuthorColor: kBannerAuthorColor,
-                  kBannerAuthorSize: kBannerAuthorSize,
-                  kBannerAlignment: kBannerAlignment,
-                );
-              },
-              placeholder: (context, url) => Center(
-                  child: Container(
-                height: SizeConfig.safeBlockHorizontal * 8,
-                width: SizeConfig.safeBlockHorizontal * 8,
-                child: CircularProgressIndicator(),
-              )),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            );
-          },
-        ),
+        child: Obx(() {
+          if (Get.find<NavController>().navIndex.value == 0) {
+            if (searchController.string.value != "") {
+              dbController.wallpapers = [];
+            }
+            if (searchController.string.value != "") {
+              dbController.dbWallpapers.forEach((wall) {
+                if (wall.name.toLowerCase().contains(
+                        searchController.string.value.toLowerCase()) ||
+                    (wall.author == null
+                        ? false
+                        : wall.author!.toLowerCase().contains(
+                            searchController.string.value.toLowerCase()))) {
+                  dbController.wallpapers.add(wall);
+                }
+              });
+            }
+
+            if (searchController.string.value == "") {
+              dbController.wallpapers = dbController.dbWallpapers;
+            }
+          }
+          return GridView.builder(
+            controller: _scrollController,
+            scrollDirection: Axis.vertical,
+            itemCount: ctrl.wallpapers.length,
+            shrinkWrap: true,
+            cacheExtent: MediaQuery.of(context).size.height * 3,
+            padding: EdgeInsets.all(
+                SizeConfig.safeBlockHorizontal * kGridViewPadding),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                childAspectRatio: kGridAspectRatio,
+                crossAxisCount: kGridCount,
+                crossAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing,
+                mainAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing),
+            itemBuilder: (context, index) {
+              return CachedNetworkImage(
+                maxHeightDiskCache: MediaQuery.of(context).size.height ~/ 3.5,
+                memCacheHeight: MediaQuery.of(context).size.height ~/ 3.5,
+                imageUrl: ctrl.wallpapers[index].url,
+                imageBuilder: (context, imageProvider) {
+                  return WallImage(
+                    imageProvider: imageProvider,
+                    index: index,
+                    ctrl: ctrl,
+                    kBorderRadius: kBorderRadius,
+                    kBorderRadiusTop: kBorderRadiusTop,
+                    kBorderRadiusBottom: kBorderRadiusBottom,
+                    kBannerHeight: kBannerHeight,
+                    kBlurAmount: kBlurAmount,
+                    kBannerColor: kBannerColor,
+                    kBannerPadding: kBannerPadding,
+                    kBannerTitleColor: kBannerTitleColor,
+                    kBannerTitleSize: kBannerTitleSize,
+                    kShowAuthor: kShowAuthor,
+                    kNullAuthorName: kNullAuthorName,
+                    kBannerAuthorColor: kBannerAuthorColor,
+                    kBannerAuthorSize: kBannerAuthorSize,
+                    kBannerAlignment: kBannerAlignment,
+                  );
+                },
+                placeholder: (context, url) => Center(
+                    child: Container(
+                  height: SizeConfig.safeBlockHorizontal * 8,
+                  width: SizeConfig.safeBlockHorizontal * 8,
+                  child: CircularProgressIndicator(),
+                )),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              );
+            },
+          );
+        }),
       );
     });
   }

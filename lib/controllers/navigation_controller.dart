@@ -6,6 +6,7 @@ import 'package:wall/screens/wallscreen/wall_screen.dart';
 
 class NavController extends GetxController {
   var navIndex = 0.obs;
+  var pageNames = ["Wallpapers", "Collections", "Favorites"];
 
   List screens = [
     WallScreen(

@@ -23,15 +23,17 @@ import 'package:palette_generator/palette_generator.dart';
 
 void computePalette(List<Object> args) async {
   var image = args[0] as Uint8List;
-  var port = args[1] as SendPort;
+  var url = args[1] as String;
+  var port = args[2] as SendPort;
   var img = Image.memory(image);
   var palette = await PaletteGenerator.fromImageProvider(
     img.image,
+    size: Size(300, 240),
     maximumColorCount: 7,
   );
   List<int> colors = [];
   palette.colors.forEach((element) => colors.add(element.value));
-  port.send(colors);
+  port.send([colors, url]);
 }
 
 class ImageViewer extends StatefulWidget {
@@ -81,6 +83,7 @@ class _ImageViewerState extends State<ImageViewer>
   @override
   void initState() {
     super.initState();
+    paletteCtrlr.currentScreenUrl = widget.wall.url;
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 200),
@@ -104,10 +107,10 @@ class _ImageViewerState extends State<ImageViewer>
     var port = ReceivePort();
     var isolate = await FlutterIsolate.spawn(
       computePalette,
-      [file.readAsBytesSync(), port.sendPort],
+      [file.readAsBytesSync(), widget.wall.url, port.sendPort],
     );
     port.listen((msg) {
-      List<int> data = msg;
+      List<Object> data = msg;
       paletteCtrlr.addColors(data, widget.wall);
       isolate.kill();
       port.close();
@@ -185,7 +188,6 @@ class _ImageViewerState extends State<ImageViewer>
             child: GestureDetector(
               onTap: () {
                 slideController.show.value = !slideController.show.value;
-                slideController.update();
               },
               onDoubleTap: _handleDoubleTap,
               onDoubleTapDown: _handleDoubleTapDown,
@@ -219,7 +221,7 @@ class _ImageViewerState extends State<ImageViewer>
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: GetBuilder<SlideController>(builder: (controller) {
+            child: Obx(() {
               return AnimatedCrossFade(
                 sizeCurve: Curves.easeOutQuad,
                 firstCurve: Curves.easeOutCubic,
@@ -271,8 +273,8 @@ class _MyAppBarState extends State<MyAppBar>
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SlideController>(
-      builder: (controller) {
+    return Obx(
+      () {
         return AnimatedCrossFade(
           sizeCurve: Curves.easeOutQuad,
           firstCurve: Curves.easeOutCubic,
@@ -436,8 +438,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                   firstChild: PaletteGrid(
                     wall: widget.wall,
                   ),
-                  secondChild: Container(
-                  ),
+                  secondChild: Container(),
                 ))
           ],
         ),
@@ -688,7 +689,8 @@ class ColorPaletteButton extends StatelessWidget {
           padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal * 2),
           child: Text(
             colorToString(color),
-            style: TextStyle(color: getTextColor(color), fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: getTextColor(color), fontWeight: FontWeight.bold),
           ),
         ),
       ),

@@ -171,6 +171,7 @@ class WallImage extends StatelessWidget {
                     .then((value) {
                   Get.find<DatabaseController>().update(["like"]);
                   Get.find<PaletteController>().colors = [];
+                  Get.find<PaletteController>().currentScreenUrl = null;
                   Get.find<SlideController>().showInfo.value = false;
                 });
               },

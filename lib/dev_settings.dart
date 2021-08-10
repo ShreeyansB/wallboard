@@ -25,7 +25,7 @@ Color kLikeButtonColor = Colors.red.shade600;
 
 // Wallpaper Tile Settings
 const double kBorderRadius = 5;
-const double kBlurAmount = 20;
+const double kBlurAmount = 0;
 
 const double kGridViewPadding = 3;
 const double kGridSpacing = 3;
@@ -33,9 +33,9 @@ const double kGridAspectRatio = 0.6;
 const int kGridCount = 2;
 
 const double kBannerHeight = 8;
-const double kBorderRadiusTop = 5;
-const double kBorderRadiusBottom = 0;
-const Alignment kBannerAlignment = Alignment.topCenter;
+const double kBorderRadiusTop = 0;
+const double kBorderRadiusBottom = 5;
+const Alignment kBannerAlignment = Alignment.bottomCenter;
 const Color kBannerColor = Colors.black38;
 const Color kBannerTitleColor = Colors.white;
 const Color kBannerAuthorColor = Colors.white60;

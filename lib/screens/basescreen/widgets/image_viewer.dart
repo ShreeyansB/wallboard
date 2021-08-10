@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:path/path.dart' as p;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -19,22 +16,6 @@ import 'package:wall/models/wallpaper_model.dart';
 import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
 import 'package:wall/screens/basescreen/widgets/like_button.dart';
 import 'package:wall/utils/size_config.dart';
-import 'package:palette_generator/palette_generator.dart';
-
-void computePalette(List<Object> args) async {
-  var image = args[0] as Uint8List;
-  var url = args[1] as String;
-  var port = args[2] as SendPort;
-  var img = Image.memory(image);
-  var palette = await PaletteGenerator.fromImageProvider(
-    img.image,
-    size: Size(300, 240),
-    maximumColorCount: 7,
-  );
-  List<int> colors = [];
-  palette.colors.forEach((element) => colors.add(element.value));
-  port.send([colors, url]);
-}
 
 class ImageViewer extends StatefulWidget {
   const ImageViewer({Key? key, required this.wall}) : super(key: key);
@@ -102,19 +83,12 @@ class _ImageViewerState extends State<ImageViewer>
   }
 
   void updatePalette() async {
-    var cache = DefaultCacheManager();
-    File file = await cache.getSingleFile(widget.wall.url);
-    var port = ReceivePort();
-    var isolate = await FlutterIsolate.spawn(
-      computePalette,
-      [file.readAsBytesSync(), widget.wall.url, port.sendPort],
-    );
-    port.listen((msg) {
-      List<Object> data = msg;
-      paletteCtrlr.addColors(data, widget.wall);
-      isolate.kill();
-      port.close();
-    });
+    while (paletteCtrlr.isIsolateComputing == true) {
+      await Future.delayed(Duration(milliseconds: 1500));
+      print("polling...");
+    }
+    paletteCtrlr.isIsolateComputing = true;
+    paletteCtrlr.getPalette(widget.wall);
   }
 
   Future<ui.Image> load(File file) async {

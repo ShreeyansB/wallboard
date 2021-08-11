@@ -56,6 +56,15 @@ class _HomePageState extends State<HomePage> {
                 transitionBuilder: (Widget child, Animation<double> animation) {
                   return FadeTransition(child: child, opacity: animation);
                 },
+                layoutBuilder: (currentChild, previousChildren) {
+                  List<Widget> children = previousChildren;
+                  if (currentChild != null)
+                    children = children.toList()..add(currentChild);
+                  return Stack(
+                    children: children,
+                    alignment: Alignment.topCenter,
+                  );
+                },
                 child: navController.screens[navController.navIndex.value],
               ),
             ),
@@ -172,8 +181,8 @@ class _MySearchAppBarState extends State<MySearchAppBar>
           ),
         ),
         PopupMenuButton(
-          iconSize: SizeConfig.safeBlockHorizontal*8,
-          color: context.theme.textTheme.headline6!.color,
+          iconSize: SizeConfig.safeBlockHorizontal * 8,
+          color: context.theme.colorScheme.secondary,
           itemBuilder: (context) {
             return [
               PopupMenuItem(child: Text("Settings")),

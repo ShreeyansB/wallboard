@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:wall/dev_settings.dart';
 import 'package:wall/models/wallpaper_model.dart';
 
 class DatabaseProvider extends GetConnect {
@@ -13,6 +14,7 @@ class DatabaseController extends GetxController {
   DatabaseProvider dbProvider = DatabaseProvider();
   List<WallpaperModel> dbWallpapers = [];
   List<WallpaperModel> wallpapers = [];
+  List<String> collections = [];
   List<String> favorites = [];
   GetStorage storage = GetStorage();
   var isLoaded = false.obs;
@@ -42,6 +44,13 @@ class DatabaseController extends GetxController {
           isPaginationLoaded.value = true;
         isLoaded.value = true;
       }
+      dbWallpapers.forEach((wall) {
+        if (!collections.contains(wall.collection))
+          collections.add(wall.collection);
+      });
+      collections.add(kCollectionNameIfNull);
+      collections.remove(kCollectionNameIfNull);
+
       favorites = List<String>.from(storage.read('fav') ?? []);
       update();
       return true;

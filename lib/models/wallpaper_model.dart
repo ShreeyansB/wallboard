@@ -1,9 +1,11 @@
+import 'package:wall/dev_settings.dart';
+
 class WallpaperModel {
   String name;
   String url;
-  String? author;
+  String author;
   String? thumbnail;
-  String? collection;
+  String collection;
   String? size;
   String? dimensions;
   bool? downloadable;
@@ -12,9 +14,9 @@ class WallpaperModel {
   WallpaperModel(
       {required this.name,
       required this.url,
-      this.author,
+      required this.author,
       this.thumbnail,
-      this.collection,
+      required this.collection,
       this.size,
       this.dimensions,
       this.downloadable,
@@ -25,9 +27,9 @@ class WallpaperModel {
       var result = WallpaperModel(
           name: json['name'],
           url: json['url'],
-          author: json['author'],
+          author: json['author'] ?? kAuthorNameIfNull,
           thumbnail: json['thumbnail'],
-          collection: json['collection'],
+          collection: json['collection'] ?? kCollectionNameIfNull,
           size: json['size'],
           dimensions: json['dimensions'],
           downloadable: json['downloadable'],

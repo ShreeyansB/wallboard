@@ -59,10 +59,8 @@ class _WallGridState extends State<WallGrid> {
               dbController.dbWallpapers.forEach((wall) {
                 if (wall.name.toLowerCase().contains(
                         searchController.string.value.toLowerCase()) ||
-                    (wall.author == null
-                        ? false
-                        : wall.author!.toLowerCase().contains(
-                            searchController.string.value.toLowerCase()))) {
+                    (wall.author.toLowerCase().contains(
+                        searchController.string.value.toLowerCase()))) {
                   dbController.wallpapers.add(wall);
                 }
               });
@@ -105,7 +103,6 @@ class _WallGridState extends State<WallGrid> {
                     kBannerTitleColor: kBannerTitleColor,
                     kBannerTitleSize: kBannerTitleSize,
                     kShowAuthor: kShowAuthor,
-                    kNullAuthorName: kNullAuthorName,
                     kBannerAuthorColor: kBannerAuthorColor,
                     kBannerAuthorSize: kBannerAuthorSize,
                     kBannerAlignment: kBannerAlignment,
@@ -140,7 +137,6 @@ class WallImage extends StatelessWidget {
     required this.kBannerTitleColor,
     required this.kBannerTitleSize,
     required this.kShowAuthor,
-    required this.kNullAuthorName,
     required this.kBannerAuthorColor,
     required this.kBannerAuthorSize,
     required this.kBannerAlignment,
@@ -159,7 +155,6 @@ class WallImage extends StatelessWidget {
   final Color kBannerTitleColor;
   final double kBannerTitleSize;
   final bool kShowAuthor;
-  final String kNullAuthorName;
   final Color kBannerAuthorColor;
   final double kBannerAuthorSize;
   final Alignment kBannerAlignment;
@@ -269,7 +264,7 @@ class WallImage extends StatelessWidget {
                                     ),
                                     if (kShowAuthor)
                                       Text(
-                                        "by ${ctrl.wallpapers[index].author ?? kNullAuthorName}",
+                                        "by ${ctrl.wallpapers[index].author}",
                                         style: TextStyle(
                                             fontWeight: FontWeight.w400,
                                             color: kBannerAuthorColor,
@@ -286,7 +281,9 @@ class WallImage extends StatelessWidget {
                               child: Center(
                                 child: LikeButton(
                                     url: ctrl.wallpapers[index].url,
-                                    size: SizeConfig.safeBlockVertical * 3.4,
+                                    size: kGridCount < 3
+                                        ? SizeConfig.safeBlockVertical * 3.4
+                                        : SizeConfig.safeBlockVertical * 2,
                                     duration: 500),
                               ),
                             )

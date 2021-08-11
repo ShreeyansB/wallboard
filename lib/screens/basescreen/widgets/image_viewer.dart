@@ -138,7 +138,7 @@ class _ImageViewerState extends State<ImageViewer>
                 ),
                 if (kShowAuthor)
                   Text(
-                    "by ${widget.wall.author ?? kNullAuthorName}",
+                    "by ${widget.wall.author}",
                     maxLines: 1,
                     style: context.textTheme.headline6!.copyWith(
                         fontWeight: FontWeight.w400,
@@ -327,7 +327,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
             ),
             if (kShowAuthor)
               Text(
-                "by ${widget.wall.author ?? kNullAuthorName}",
+                "by ${widget.wall.author}",
                 style: context.textTheme.headline6!.copyWith(
                   color: kBannerAuthorColor,
                   fontSize: SizeConfig.safeBlockHorizontal * 4.4,

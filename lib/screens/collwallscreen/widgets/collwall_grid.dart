@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wall/controllers/database_controller.dart';
-import 'package:wall/controllers/navigation_controller.dart';
 import 'package:wall/controllers/palette_controller.dart';
 import 'package:wall/controllers/search_controller.dart';
 import 'package:wall/controllers/slide_controller.dart';
@@ -11,31 +10,21 @@ import 'package:wall/dev_settings.dart';
 import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
 import 'package:wall/screens/basescreen/widgets/image_viewer.dart';
 import 'package:wall/screens/basescreen/widgets/like_button.dart';
-import 'package:wall/screens/basescreen/widgets/no_items.dart';
 import 'package:wall/utils/size_config.dart';
 
-class WallGrid extends StatefulWidget {
-  const WallGrid({Key? key}) : super(key: key);
+class CollWallGrid extends StatefulWidget {
+  const CollWallGrid({Key? key, required this.collectionName})
+      : super(key: key);
+  final String collectionName;
 
   @override
-  _WallGridState createState() => _WallGridState();
+  _CollWallGridState createState() => _CollWallGridState();
 }
 
-class _WallGridState extends State<WallGrid> {
+class _CollWallGridState extends State<CollWallGrid> {
   ScrollController _scrollController = ScrollController();
   var dbController = Get.find<DatabaseController>();
   var searchController = Get.find<SearchController>();
-
-  @override
-  void initState() {
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent) {
-        dbController.addWalls();
-      }
-    });
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -52,28 +41,28 @@ class _WallGridState extends State<WallGrid> {
         thickness: SizeConfig.safeBlockHorizontal * 2,
         radius: Radius.circular(SizeConfig.safeBlockHorizontal * 4),
         child: Obx(() {
-          if (Get.find<NavController>().navIndex.value == 0) {
-            if (searchController.string.value != "") {
-              dbController.wallpapers = [];
-            }
-            if (searchController.string.value != "") {
-              dbController.dbWallpapers.forEach((wall) {
-                if (wall.name.toLowerCase().contains(
-                        searchController.string.value.toLowerCase()) ||
-                    (wall.author.toLowerCase().contains(
-                        searchController.string.value.toLowerCase()))) {
-                  dbController.wallpapers.add(wall);
-                }
-              });
-            }
-
-            if (searchController.string.value == "") {
-              dbController.wallpapers = dbController.dbWallpapers;
-            }
-            if (dbController.wallpapers.isEmpty) {
-              return NoItems();
-            }
+          if (searchController.string.value != "") {
+            dbController.wallpapers = [];
           }
+          if (searchController.string.value != "") {
+            dbController.dbWallpapers.forEach((wall) {
+              if (wall.collection == widget.collectionName &&
+                      wall.name.toLowerCase().contains(
+                          searchController.string.value.toLowerCase()) ||
+                  (wall.author
+                      .toLowerCase()
+                      .contains(searchController.string.value.toLowerCase()))) {
+                dbController.wallpapers.add(wall);
+              }
+            });
+          }
+
+          if (searchController.string.value == "") {
+            dbController.wallpapers = dbController.dbWallpapers
+                .where((wall) => wall.collection == widget.collectionName)
+                .toList();
+          }
+
           return GridView.builder(
             controller: _scrollController,
             scrollDirection: Axis.vertical,
@@ -95,7 +84,7 @@ class _WallGridState extends State<WallGrid> {
                     (1.7 * kWallpaperTileImageQuality),
                 imageUrl: ctrl.wallpapers[index].url,
                 imageBuilder: (context, imageProvider) {
-                  return WallImage(
+                  return CollWallImage(
                     imageProvider: imageProvider,
                     index: index,
                     ctrl: ctrl,
@@ -117,8 +106,8 @@ class _WallGridState extends State<WallGrid> {
   }
 }
 
-class WallImage extends StatelessWidget {
-  const WallImage({
+class CollWallImage extends StatelessWidget {
+  const CollWallImage({
     Key? key,
     required this.imageProvider,
     required this.ctrl,

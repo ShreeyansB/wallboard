@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // BASE SETTINGS
+const String kAppName = "Wallpapers";
+
+// THEME SETTINGS
 
 const bool kIsBgGradient = false;
 const Color kGradientColorLight = Colors.black26;
@@ -48,10 +51,20 @@ const double kBannerPadding = 3.2;
 
 const bool kShowAuthor = true;
 
+const bool kIsTitleUppercase = false;
+const bool kIsAuthorUppercase = false;
+
+const double kWallpaperTileImageQuality = 2;
+
 // COLLECTION SCREEN SETTINGS
 const double kBannerFontSize = 4;
 const bool kShowCollectionCount = true;
+const bool kIsTextUppercase = true;
 
+const int kCollectionGridCount = 1;
+const double kCollectionGridAspectRatio = 1.4;
+
+const double kCollectionTileImageQuality = 1;
 
 // ICON FONTS
 const String kWallpapersNavIcon = "\uEC14";

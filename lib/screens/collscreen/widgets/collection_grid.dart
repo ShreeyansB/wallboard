@@ -4,9 +4,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wall/controllers/database_controller.dart';
+import 'package:wall/controllers/navigation_controller.dart';
 import 'package:wall/controllers/search_controller.dart';
 import 'package:wall/dev_settings.dart';
 import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
+import 'package:wall/screens/basescreen/widgets/no_items.dart';
+import 'package:wall/screens/collwallscreen/collwall_screen.dart';
 import 'package:wall/utils/size_config.dart';
 
 class CollGrid extends StatefulWidget {
@@ -31,51 +34,76 @@ class _CollGridState extends State<CollGrid> {
   Widget build(BuildContext context) {
     return GetBuilder<DatabaseController>(
       builder: (ctrl) {
+        var listCollections = ctrl.collections;
         return Scrollbar(
             controller: _scrollController,
             interactive: true,
             thickness: SizeConfig.safeBlockHorizontal * 2,
             radius: Radius.circular(SizeConfig.safeBlockHorizontal * 4),
-            child: GridView.builder(
-              controller: _scrollController,
-              scrollDirection: Axis.vertical,
-              itemCount: ctrl.collections.length,
-              shrinkWrap: true,
-              cacheExtent: MediaQuery.of(context).size.height * 3,
-              padding: EdgeInsets.all(
-                  SizeConfig.safeBlockHorizontal * kGridViewPadding),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  childAspectRatio: kGridAspectRatio,
-                  crossAxisCount: kGridCount,
-                  crossAxisSpacing:
-                      SizeConfig.safeBlockHorizontal * kGridSpacing,
-                  mainAxisSpacing:
-                      SizeConfig.safeBlockHorizontal * kGridSpacing),
-              itemBuilder: (context, index) {
-                return CachedNetworkImage(
-                  maxHeightDiskCache: MediaQuery.of(context).size.height ~/ 3.5,
-                  memCacheHeight: MediaQuery.of(context).size.height ~/ 3.5,
-                  imageUrl: ctrl.dbWallpapers
-                      .firstWhere(
-                          (wall) => wall.collection == ctrl.collections[index])
-                      .url,
-                  imageBuilder: (context, imageProvider) {
-                    return CollImage(
-                      imageProvider: imageProvider,
-                      index: index,
-                      ctrl: ctrl,
-                    );
-                  },
-                  placeholder: (context, url) => Center(
-                      child: Container(
-                    height: SizeConfig.safeBlockHorizontal * 8,
-                    width: SizeConfig.safeBlockHorizontal * 8,
-                    child: CircularProgressIndicator(),
-                  )),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
-                );
-              },
-            ));
+            child: Obx(() {
+              if (Get.find<NavController>().navIndex.value == 1) {
+                if (searchController.string.value != "") {
+                  listCollections = [];
+                }
+                if (searchController.string.value != "") {
+                  ctrl.collections.forEach((coll) {
+                    if (coll
+                        .toLowerCase()
+                        .contains(searchController.string.value.toLowerCase()))
+                      listCollections.add(coll);
+                  });
+                }
+
+                if (searchController.string.value == "") {
+                  listCollections = ctrl.collections;
+                }
+                if (listCollections.isEmpty) {
+                  return NoItems();
+                }
+              }
+              return GridView.builder(
+                controller: _scrollController,
+                scrollDirection: Axis.vertical,
+                itemCount: listCollections.length,
+                shrinkWrap: true,
+                cacheExtent: MediaQuery.of(context).size.height * 3,
+                padding: EdgeInsets.all(
+                    SizeConfig.safeBlockHorizontal * kGridViewPadding),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    childAspectRatio: kCollectionGridAspectRatio,
+                    crossAxisCount: kCollectionGridCount,
+                    crossAxisSpacing:
+                        SizeConfig.safeBlockHorizontal * kGridSpacing,
+                    mainAxisSpacing:
+                        SizeConfig.safeBlockHorizontal * kGridSpacing),
+                itemBuilder: (context, index) {
+                  return CachedNetworkImage(
+                    maxHeightDiskCache: MediaQuery.of(context).size.height ~/
+                        (1.9 * kCollectionTileImageQuality),
+                    memCacheHeight: MediaQuery.of(context).size.height ~/
+                        (1.9 * kCollectionTileImageQuality),
+                    imageUrl: ctrl.dbWallpapers
+                        .firstWhere(
+                            (wall) => wall.collection == listCollections[index])
+                        .url,
+                    imageBuilder: (context, imageProvider) {
+                      return CollImage(
+                        imageProvider: imageProvider,
+                        collectionName: listCollections[index],
+                        ctrl: ctrl,
+                      );
+                    },
+                    placeholder: (context, url) => Center(
+                        child: Container(
+                      height: SizeConfig.safeBlockHorizontal * 8,
+                      width: SizeConfig.safeBlockHorizontal * 8,
+                      child: CircularProgressIndicator(),
+                    )),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  );
+                },
+              );
+            }));
       },
     );
   }
@@ -86,12 +114,12 @@ class CollImage extends StatelessWidget {
       {Key? key,
       required this.imageProvider,
       required this.ctrl,
-      required this.index})
+      required this.collectionName})
       : super(key: key);
 
   final ImageProvider imageProvider;
   final DatabaseController ctrl;
-  final int index;
+  final String collectionName;
 
   @override
   Widget build(BuildContext context) {
@@ -107,24 +135,6 @@ class CollImage extends StatelessWidget {
               filterQuality: FilterQuality.low,
               image: imageProvider,
               fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        Positioned.fill(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              splashFactory: Theme.of(context).splashFactory,
-              splashColor: Colors.transparent,
-              borderRadius: BorderRadius.circular(
-                  SizeConfig.safeBlockHorizontal * kBorderRadius),
-              onTap: () async {
-                var walls = ctrl.dbWallpapers.where(
-                    (wall) => wall.collection == ctrl.collections[index]);
-                walls.forEach((element) {
-                  print(element.name);
-                });
-              },
             ),
           ),
         ),
@@ -168,38 +178,27 @@ class CollImage extends StatelessWidget {
                               condition: kShowCollectionCount,
                               conditionalBuilder: (child) =>
                                   Expanded(flex: 11, child: child),
-                              child: Hero(
-                                tag: ctrl.collections[index],
-                                flightShuttleBuilder: (flightContext,
-                                        animation,
-                                        flightDirection,
-                                        fromHeroContext,
-                                        toHeroContext) =>
-                                    DefaultTextStyle(
-                                        style: kBaseTextStyle(),
-                                        maxLines: 1,
-                                        child: toHeroContext.widget),
-                                child: Text(
-                                  ctrl.collections[index],
-                                  style: TextStyle(
-                                      color: kBannerTitleColor,
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal *
-                                              kBannerFontSize,
-                                      fontWeight: FontWeight.w600,
-                                      decoration: TextDecoration.none),
-                                ),
+                              child: Text(
+                                kIsTextUppercase
+                                    ? collectionName.toUpperCase()
+                                    : collectionName,
+                                style: TextStyle(
+                                    color: kBannerTitleColor,
+                                    fontSize: SizeConfig.safeBlockHorizontal *
+                                        kBannerFontSize,
+                                    fontWeight: FontWeight.w600,
+                                    decoration: TextDecoration.none),
                               ),
                             ),
                             if (kShowCollectionCount)
                               Expanded(
                                 flex: 4,
-                                child: Center(
+                                child: Align(
+                                  alignment: Alignment.centerRight,
                                   child: Text(
                                     ctrl.dbWallpapers
                                         .where((wall) =>
-                                            wall.collection ==
-                                            ctrl.collections[index])
+                                            wall.collection == collectionName)
                                         .length
                                         .toString(),
                                     style: TextStyle(
@@ -219,7 +218,23 @@ class CollImage extends StatelessWidget {
                   ),
                 ),
               ),
-            ))
+            )),
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              splashFactory: Theme.of(context).splashFactory,
+              splashColor: Colors.transparent,
+              borderRadius: BorderRadius.circular(
+                  SizeConfig.safeBlockHorizontal * kBorderRadius),
+              onTap: () async {
+                Get.to(() => CollWallScreen(
+                      collectionName: collectionName,
+                    ));
+              },
+            ),
+          ),
+        )
       ],
     );
   }

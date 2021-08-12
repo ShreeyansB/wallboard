@@ -44,13 +44,14 @@ class _HomePageState extends State<HomePage> {
         },
         child: Scaffold(
           backgroundColor: Colors.transparent,
+          resizeToAvoidBottomInset: false,
           appBar: MySearchAppBar(),
           body: PageStorage(
             bucket: bucket,
             child: Obx(
               () => AnimatedSwitcher(
-                duration: Duration(milliseconds: 400),
-                reverseDuration: Duration(milliseconds: 400),
+                duration: Duration(milliseconds: 600),
+                reverseDuration: Duration(milliseconds: 600),
                 switchInCurve: Curves.easeOut,
                 switchOutCurve: Curves.easeIn,
                 transitionBuilder: (Widget child, Animation<double> animation) {
@@ -78,8 +79,9 @@ class _HomePageState extends State<HomePage> {
 
 class MySearchAppBar extends StatefulWidget implements PreferredSizeWidget {
   final double height = 60.0;
+  final String? title;
 
-  const MySearchAppBar({Key? key}) : super(key: key);
+  const MySearchAppBar({Key? key, this.title}) : super(key: key);
   @override
   _MySearchAppBarState createState() => _MySearchAppBarState();
 
@@ -94,14 +96,6 @@ class _MySearchAppBarState extends State<MySearchAppBar>
   var searchController = Get.find<SearchController>();
 
   RxBool showSearch = RxBool(false);
-
-  Widget titleWidget = Text(
-    "Wallpapers",
-    style: TextStyle(
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.8,
-        fontSize: SizeConfig.safeBlockHorizontal * 5.8),
-  );
 
   @override
   void initState() {
@@ -119,6 +113,17 @@ class _MySearchAppBarState extends State<MySearchAppBar>
 
   @override
   Widget build(BuildContext context) {
+    Widget titleWidget = Padding(
+        padding: EdgeInsets.only(
+            left: SizeConfig.safeBlockHorizontal * kGridViewPadding / 4),
+        child: Text(
+          widget.title ?? kAppName,
+          style: TextStyle(
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.8,
+              fontSize: SizeConfig.safeBlockHorizontal * 5.5),
+        ));
+
     Widget searchIcon = Text(
       kSearchIcon,
       style: TextStyle(
@@ -160,24 +165,27 @@ class _MySearchAppBarState extends State<MySearchAppBar>
         }
       }),
       actions: [
-        TextButton(
-          onPressed: () {
-            showSearch.value = !showSearch.value;
-            textCtrlr.text = "";
-          },
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100))),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal * 1),
-            child: Obx(() {
-              if (showSearch.value) {
-                return closeIcon;
-              } else {
-                return searchIcon;
-              }
-            }),
+        Tooltip(
+          message: "Search",
+          child: TextButton(
+            onPressed: () {
+              showSearch.value = !showSearch.value;
+              textCtrlr.text = "";
+            },
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100))),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal * 1),
+              child: Obx(() {
+                if (showSearch.value) {
+                  return closeIcon;
+                } else {
+                  return searchIcon;
+                }
+              }),
+            ),
           ),
         ),
         PopupMenuButton(

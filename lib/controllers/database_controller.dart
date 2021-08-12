@@ -15,7 +15,13 @@ class DatabaseController extends GetxController {
   List<WallpaperModel> dbWallpapers = [];
   List<WallpaperModel> wallpapers = [];
   List<String> collections = [];
-  List<String> favorites = [];
+
+  // List<WallpaperModel> favorites = dbController.dbWallpapers
+  //         .where((wall) => dbController.favorites.contains(wall.url))
+  //         .toList();
+  List<WallpaperModel> listFavorites = [];
+  List<WallpaperModel> dbFavorites = [];
+
   GetStorage storage = GetStorage();
   var isLoaded = false.obs;
   var isPaginationLoaded = false.obs;
@@ -51,7 +57,10 @@ class DatabaseController extends GetxController {
       collections.add(kCollectionNameIfNull);
       collections.remove(kCollectionNameIfNull);
 
-      favorites = List<String>.from(storage.read('fav') ?? []);
+      var tempFav = List<String>.from(storage.read('fav') ?? []);
+      dbFavorites =
+          dbWallpapers.where((wall) => tempFav.contains(wall.url)).toList();
+      listFavorites = dbFavorites.toList();
       update();
       return true;
     }
@@ -72,14 +81,18 @@ class DatabaseController extends GetxController {
   }
 
   void addFavorite(String url) {
-    favorites.add(url);
-    storage.write('fav', favorites);
+    dbFavorites.add(dbWallpapers.firstWhere((wall) => wall.url == url));
+    var tempFav = [];
+    dbFavorites.forEach((wall) => tempFav.add(wall.url));
+    storage.write('fav', tempFav);
     update(["fav"]);
   }
 
   void removeFavorite(String url) {
-    favorites.remove(url);
-    storage.write('fav', favorites);
+    dbFavorites.remove(dbWallpapers.firstWhere((wall) => wall.url == url));
+    var tempFav = [];
+    dbFavorites.forEach((wall) => tempFav.add(wall.url));
+    storage.write('fav', tempFav);
     update(["fav"]);
   }
 

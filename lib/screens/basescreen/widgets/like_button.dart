@@ -30,8 +30,8 @@ class _LikeButtonState extends State<LikeButton>
   var dbController = Get.find<DatabaseController>();
 
   void initValues() {
-    isEnabled = dbController.favorites.contains(widget.url);
-    data.value = dbController.favorites.contains(widget.url)
+    isEnabled = dbController.dbFavorites.indexWhere((wall) => wall.url == widget.url) != -1;
+    data.value = dbController.dbFavorites.indexWhere((wall) => wall.url == widget.url) != -1
         ? kFavoriteIcon
         : kNonFavoriteIcon;
   }
@@ -148,8 +148,8 @@ class _LikeButtonBGState extends State<LikeButtonBG>
   @override
   void initState() {
     super.initState();
-    isEnabled = dbController.favorites.contains(widget.url);
-    data.value = dbController.favorites.contains(widget.url)
+    isEnabled = dbController.dbFavorites.indexWhere((wall) => wall.url == widget.url) != -1;
+    data.value = dbController.dbFavorites.indexWhere((wall) => wall.url == widget.url) != -1
         ? kFavoriteIcon
         : kNonFavoriteIcon;
 

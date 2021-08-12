@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,28 +15,17 @@ import 'package:wall/screens/basescreen/widgets/like_button.dart';
 import 'package:wall/screens/basescreen/widgets/no_items.dart';
 import 'package:wall/utils/size_config.dart';
 
-class WallGrid extends StatefulWidget {
-  const WallGrid({Key? key}) : super(key: key);
+class FavGrid extends StatefulWidget {
+  const FavGrid({Key? key}) : super(key: key);
 
   @override
-  _WallGridState createState() => _WallGridState();
+  _FavGridState createState() => _FavGridState();
 }
 
-class _WallGridState extends State<WallGrid> {
+class _FavGridState extends State<FavGrid> {
   ScrollController _scrollController = ScrollController();
   var dbController = Get.find<DatabaseController>();
   var searchController = Get.find<SearchController>();
-
-  @override
-  void initState() {
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent) {
-        dbController.addWalls();
-      }
-    });
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -45,80 +35,85 @@ class _WallGridState extends State<WallGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<DatabaseController>(builder: (ctrl) {
-      return Scrollbar(
-        controller: _scrollController,
-        interactive: true,
-        thickness: SizeConfig.safeBlockHorizontal * 2,
-        radius: Radius.circular(SizeConfig.safeBlockHorizontal * 4),
-        child: Obx(() {
-          if (Get.find<NavController>().navIndex.value == 0) {
-            if (searchController.string.value != "") {
-              dbController.wallpapers = [];
-            }
-            if (searchController.string.value != "") {
-              dbController.dbWallpapers.forEach((wall) {
-                if (wall.name.toLowerCase().contains(
-                        searchController.string.value.toLowerCase()) ||
-                    (wall.author.toLowerCase().contains(
-                        searchController.string.value.toLowerCase()))) {
-                  dbController.wallpapers.add(wall);
-                }
-              });
-            }
-
-            if (searchController.string.value == "") {
-              dbController.wallpapers = dbController.dbWallpapers;
-            }
-            if (dbController.wallpapers.isEmpty) {
-              return NoItems();
-            }
-          }
-          return GridView.builder(
+    return GetBuilder<DatabaseController>(
+        id: "fav",
+        builder: (ctrl) {
+          return Scrollbar(
             controller: _scrollController,
-            scrollDirection: Axis.vertical,
-            itemCount: ctrl.wallpapers.length,
-            shrinkWrap: true,
-            cacheExtent: MediaQuery.of(context).size.height * 3,
-            padding: EdgeInsets.all(
-                SizeConfig.safeBlockHorizontal * kGridViewPadding),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                childAspectRatio: kGridAspectRatio,
-                crossAxisCount: kGridCount,
-                crossAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing,
-                mainAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing),
-            itemBuilder: (context, index) {
-              return CachedNetworkImage(
-                maxHeightDiskCache: MediaQuery.of(context).size.height ~/
-                    (1.7 * kWallpaperTileImageQuality),
-                memCacheHeight: MediaQuery.of(context).size.height ~/
-                    (1.7 * kWallpaperTileImageQuality),
-                imageUrl: ctrl.wallpapers[index].url,
-                imageBuilder: (context, imageProvider) {
-                  return WallImage(
-                    imageProvider: imageProvider,
-                    index: index,
-                    ctrl: ctrl,
+            interactive: true,
+            thickness: SizeConfig.safeBlockHorizontal * 2,
+            radius: Radius.circular(SizeConfig.safeBlockHorizontal * 4),
+            child: Obx(() {
+              if (Get.find<NavController>().navIndex.value == 2) {
+                if (searchController.string.value != "") {
+                  dbController.listFavorites = [];
+                }
+                if (searchController.string.value != "") {
+                  dbController.dbFavorites.forEach((wall) {
+                    if (wall.name.toLowerCase().contains(
+                            searchController.string.value.toLowerCase()) ||
+                        (wall.author.toLowerCase().contains(
+                            searchController.string.value.toLowerCase()))) {
+                      dbController.listFavorites.add(wall);
+                    }
+                  });
+                }
+
+                if (searchController.string.value == "") {
+                  dbController.listFavorites =
+                      dbController.dbFavorites.toList();
+                }
+              }
+              if (dbController.listFavorites.isEmpty) {
+                return NoItems();
+              }
+              return GridView.builder(
+                controller: _scrollController,
+                scrollDirection: Axis.vertical,
+                itemCount: ctrl.listFavorites.length,
+                shrinkWrap: true,
+                cacheExtent: MediaQuery.of(context).size.height * 3,
+                padding: EdgeInsets.all(
+                    SizeConfig.safeBlockHorizontal * kGridViewPadding),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    childAspectRatio: kGridAspectRatio,
+                    crossAxisCount: kGridCount,
+                    crossAxisSpacing:
+                        SizeConfig.safeBlockHorizontal * kGridSpacing,
+                    mainAxisSpacing:
+                        SizeConfig.safeBlockHorizontal * kGridSpacing),
+                itemBuilder: (context, index) {
+                  return CachedNetworkImage(
+                    maxHeightDiskCache: MediaQuery.of(context).size.height ~/
+                        (1.7 * kWallpaperTileImageQuality),
+                    memCacheHeight: MediaQuery.of(context).size.height ~/
+                        (1.7 * kWallpaperTileImageQuality),
+                    imageUrl: ctrl.listFavorites[index].url,
+                    imageBuilder: (context, imageProvider) {
+                      return FavImage(
+                        imageProvider: imageProvider,
+                        index: index,
+                        ctrl: ctrl,
+                      );
+                    },
+                    placeholder: (context, url) => Center(
+                        child: Container(
+                      height: SizeConfig.safeBlockHorizontal * 8,
+                      width: SizeConfig.safeBlockHorizontal * 8,
+                      child: CircularProgressIndicator(),
+                    )),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   );
                 },
-                placeholder: (context, url) => Center(
-                    child: Container(
-                  height: SizeConfig.safeBlockHorizontal * 8,
-                  width: SizeConfig.safeBlockHorizontal * 8,
-                  child: CircularProgressIndicator(),
-                )),
-                errorWidget: (context, url, error) => Icon(Icons.error),
               );
-            },
+            }),
           );
-        }),
-      );
-    });
+        });
   }
 }
 
-class WallImage extends StatelessWidget {
-  const WallImage({
+class FavImage extends StatelessWidget {
+  const FavImage({
     Key? key,
     required this.imageProvider,
     required this.ctrl,
@@ -155,7 +150,7 @@ class WallImage extends StatelessWidget {
               borderRadius: BorderRadius.circular(
                   SizeConfig.safeBlockHorizontal * kBorderRadius),
               onTap: () async {
-                Get.to(() => ImageViewer(wall: ctrl.wallpapers[index]))!
+                Get.to(() => ImageViewer(wall: ctrl.listFavorites[index]))!
                     .then((value) {
                   Get.find<DatabaseController>().update(["like"]);
                   Get.find<PaletteController>().colors = [];
@@ -204,7 +199,7 @@ class WallImage extends StatelessWidget {
                             Expanded(
                               flex: 11,
                               child: Hero(
-                                tag: ctrl.wallpapers[index].url,
+                                tag: ctrl.listFavorites[index].url,
                                 flightShuttleBuilder: (flightContext,
                                         animation,
                                         flightDirection,
@@ -221,9 +216,9 @@ class WallImage extends StatelessWidget {
                                   children: [
                                     Text(
                                       kIsTitleUppercase
-                                          ? ctrl.wallpapers[index].name
+                                          ? ctrl.listFavorites[index].name
                                               .toUpperCase()
-                                          : ctrl.wallpapers[index].name,
+                                          : ctrl.listFavorites[index].name,
                                       style: TextStyle(
                                           color: kBannerTitleColor,
                                           fontSize:
@@ -235,9 +230,9 @@ class WallImage extends StatelessWidget {
                                     if (kShowAuthor)
                                       Text(
                                         kIsAuthorUppercase
-                                            ? "by ${ctrl.wallpapers[index].author}"
+                                            ? "by ${ctrl.listFavorites[index].author}"
                                                 .toUpperCase()
-                                            : "by ${ctrl.wallpapers[index].author}",
+                                            : "by ${ctrl.listFavorites[index].author}",
                                         style: TextStyle(
                                             fontWeight: FontWeight.w400,
                                             color: kBannerAuthorColor,
@@ -254,7 +249,7 @@ class WallImage extends StatelessWidget {
                               child: Align(
                                 alignment: Alignment.centerRight,
                                 child: LikeButton(
-                                    url: ctrl.wallpapers[index].url,
+                                    url: ctrl.listFavorites[index].url,
                                     size: kGridCount < 3
                                         ? SizeConfig.safeBlockVertical * 3.4
                                         : SizeConfig.safeBlockVertical * 2,

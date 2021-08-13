@@ -30,6 +30,9 @@ class MyApp extends StatelessWidget {
     Get.put(PaletteController());
     Get.put(SearchController());
 
+    print(Get.find<DatabaseController>().getThemeType());
+    Get.changeThemeMode(Get.find<DatabaseController>().getThemeType());
+
     return GetMaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
@@ -46,48 +49,46 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: kBgColorLight,
       ),
       darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          primarySwatch: Colors.deepPurple,
-          primaryColor: Colors.deepPurpleAccent.shade400,
-          splashColor: Colors.white10,
-          splashFactory: InkRipple.splashFactory,
-          accentColor: Colors.deepPurpleAccent.shade100,
-          colorScheme: ColorScheme.dark(
-              primary: Colors.deepPurple,
-              brightness: Brightness.dark,
-              primaryVariant: Colors.deepPurpleAccent.shade400,
-              background: kBgColorDark,
-              onBackground: Colors.white,
-              secondary: Color(0xff372e61)),
-          textTheme: kBaseTextTheme(ThemeData.dark().textTheme),
-          accentTextTheme: kBaseTextTheme(ThemeData.dark().accentTextTheme),
-          primaryTextTheme: kBaseTextTheme(ThemeData.dark().primaryTextTheme),
-          scaffoldBackgroundColor: kBgColorDark,
-          tooltipTheme: TooltipThemeData(
-              textStyle: kBaseTextStyle(color: Colors.white),
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(10),
-              )),
-          appBarTheme: ThemeData.dark()
-              .appBarTheme
-              .copyWith(textTheme: kBaseTextTheme(ThemeData.dark().textTheme)),
-          bottomNavigationBarTheme: BottomNavigationBarThemeData(
-            backgroundColor: kAppbarColorDark,
-            elevation: 0,
-            type: BottomNavigationBarType.fixed,
-            selectedLabelStyle: kBaseTextStyle(fontWeight: FontWeight.w500),
-            unselectedLabelStyle: kBaseTextStyle(fontWeight: FontWeight.w500),
-            selectedItemColor: Colors.deepPurpleAccent.shade100,
-            unselectedItemColor: Colors.white,
-          ),
-          scrollbarTheme: ThemeData.dark().scrollbarTheme.copyWith(
-                thumbColor: MaterialStateProperty.all(Colors.white12),
-                trackColor: MaterialStateProperty.all(Colors.white54),
-              ),
-          popupMenuTheme: ThemeData.dark().popupMenuTheme.copyWith(
-            color: kBgColorDarkLighter
-          )),
+        brightness: Brightness.dark,
+        primarySwatch: Colors.deepPurple,
+        primaryColor: Colors.deepPurpleAccent.shade400,
+        splashColor: Colors.white10,
+        splashFactory: InkRipple.splashFactory,
+        accentColor: Colors.deepPurpleAccent.shade100,
+        colorScheme: ColorScheme.dark(
+            primary: Colors.deepPurple,
+            brightness: Brightness.dark,
+            primaryVariant: Colors.deepPurpleAccent.shade400,
+            background: kBgColorDark,
+            onBackground: Colors.white,
+            secondary: kBgColorDarkLighter),
+        textTheme: kBaseTextTheme(ThemeData.dark().textTheme),
+        accentTextTheme: kBaseTextTheme(ThemeData.dark().accentTextTheme),
+        primaryTextTheme: kBaseTextTheme(ThemeData.dark().primaryTextTheme),
+        scaffoldBackgroundColor: kBgColorDark,
+        tooltipTheme: TooltipThemeData(
+            textStyle: kBaseTextStyle(color: Colors.white),
+            decoration: BoxDecoration(
+              color: Colors.black54,
+              borderRadius: BorderRadius.circular(10),
+            )),
+        appBarTheme: ThemeData.dark()
+            .appBarTheme
+            .copyWith(textTheme: kBaseTextTheme(ThemeData.dark().textTheme)),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: kAppbarColorDark,
+          elevation: 0,
+          type: BottomNavigationBarType.fixed,
+          selectedLabelStyle: kBaseTextStyle(fontWeight: FontWeight.w500),
+          unselectedLabelStyle: kBaseTextStyle(fontWeight: FontWeight.w500),
+          selectedItemColor: Colors.deepPurpleAccent.shade100,
+          unselectedItemColor: Colors.white,
+        ),
+        scrollbarTheme: ThemeData.dark().scrollbarTheme.copyWith(
+              thumbColor: MaterialStateProperty.all(Colors.white12),
+              trackColor: MaterialStateProperty.all(Colors.white54),
+            ),
+      ),
       customTransition: MyScaleTransition(),
       transitionDuration: Duration(milliseconds: 300),
       home: HomePage(),

@@ -1,11 +1,13 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wall/controllers/database_controller.dart';
 import 'package:wall/controllers/navigation_controller.dart';
 import 'package:wall/controllers/search_controller.dart';
 import 'package:wall/dev_settings.dart';
 import 'package:wall/screens/basescreen/widgets/bottom_nav_bar.dart';
 import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
+import 'package:wall/screens/basescreen/widgets/theme_dialog.dart';
 import 'package:wall/utils/size_config.dart';
 
 class HomePage extends StatefulWidget {
@@ -76,6 +78,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+enum MenuOption { theme, about }
 
 class MySearchAppBar extends StatefulWidget implements PreferredSizeWidget {
   final double height = 60.0;
@@ -188,13 +192,40 @@ class _MySearchAppBarState extends State<MySearchAppBar>
             ),
           ),
         ),
-        PopupMenuButton(
+        PopupMenuButton<MenuOption>(
           iconSize: SizeConfig.safeBlockHorizontal * 8,
-          color: context.theme.colorScheme.secondary,
+          color: kBgColorDarkLighter,
+          icon: Icon(
+            Icons.more_vert_rounded,
+            color: context.textTheme.headline6!.color,
+          ),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                  SizeConfig.safeBlockHorizontal * kBorderRadius)),
+          onSelected: (value) async {
+            if (value == MenuOption.theme) {
+              ThemeMode? result = await showDialog(
+                context: context,
+                builder: (context) => ThemeDialog(),
+              );
+              if (result != null) {
+                Get.changeThemeMode(result);
+                Get.find<DatabaseController>().setThemeType(result);
+              }
+            } else {
+              print("boo");
+            }
+          },
           itemBuilder: (context) {
             return [
-              PopupMenuItem(child: Text("Settings")),
-              PopupMenuItem(child: Text("About")),
+              PopupMenuItem(
+                child: Text("Theme"),
+                value: MenuOption.theme,
+              ),
+              PopupMenuItem(
+                child: Text("About"),
+                value: MenuOption.about,
+              ),
             ];
           },
         ),

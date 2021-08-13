@@ -431,7 +431,7 @@ class SheetButtonGrid extends StatelessWidget {
   static const platform = MethodChannel('com.ballistic/wallpaper');
 
   void saveWallpaper(WallpaperModel wall) async {
-    if (wall.downloadable ?? true) {
+    if (!Platform.isIOS && (wall.downloadable ?? true)) {
       final cache = DefaultCacheManager();
       final file = await cache.getSingleFile(wall.url);
       Directory appDocumentsDirectory = await getExternalStorageDirectory() ??
@@ -459,10 +459,20 @@ class SheetButtonGrid extends StatelessWidget {
   }
 
   void setWallpaper(WallpaperModel wall) async {
-    var cache = DefaultCacheManager();
-    File file = await cache.getSingleFile(wall.url);
-    platform.invokeMethod(
-        "setWallpaper", {"uri": file.path}).then((value) => print(value));
+    if (!Platform.isIOS) {
+      var cache = DefaultCacheManager();
+      File file = await cache.getSingleFile(wall.url);
+      platform.invokeMethod(
+          "setWallpaper", {"uri": file.path}).then((value) => print(value));
+    } else {
+      Get.showSnackbar(GetBar(
+        message: "Wallpaper cannot be set on iOS",
+        backgroundColor: Get.theme.scaffoldBackgroundColor,
+        duration: Duration(seconds: 3),
+        animationDuration: Duration(milliseconds: 300),
+        icon: Icon(Icons.report_outlined),
+      ));
+    }
   }
 
   void togglePalette() {

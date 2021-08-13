@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:wall/dev_settings.dart';
@@ -94,6 +95,24 @@ class DatabaseController extends GetxController {
     dbFavorites.forEach((wall) => tempFav.add(wall.url));
     storage.write('fav', tempFav);
     update(["fav"]);
+  }
+
+  void setThemeType(ThemeMode mode) {
+    storage.write('theme', mode.toString());
+  }
+
+  ThemeMode getThemeType() {
+    ThemeMode result = stringToTheme(storage.read('theme'));
+    return result;
+  }
+
+  ThemeMode stringToTheme(dynamic val) {
+    if (val == "ThemeMode.dark")
+      return ThemeMode.dark;
+    else if (val == "ThemeMode.light")
+      return ThemeMode.light;
+    else
+      return ThemeMode.system;
   }
 
   @override

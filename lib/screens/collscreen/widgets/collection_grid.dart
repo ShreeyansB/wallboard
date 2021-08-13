@@ -85,6 +85,9 @@ class _CollGridState extends State<CollGrid> {
                     imageUrl: ctrl.dbWallpapers
                         .firstWhere(
                             (wall) => wall.collection == listCollections[index])
+                        .thumbnail ?? ctrl.dbWallpapers
+                        .firstWhere(
+                            (wall) => wall.collection == listCollections[index])
                         .url,
                     imageBuilder: (context, imageProvider) {
                       return CollImage(

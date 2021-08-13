@@ -88,7 +88,8 @@ class _FavGridState extends State<FavGrid> {
                         (1.7 * kWallpaperTileImageQuality),
                     memCacheHeight: MediaQuery.of(context).size.height ~/
                         (1.7 * kWallpaperTileImageQuality),
-                    imageUrl: ctrl.listFavorites[index].url,
+                    imageUrl: ctrl.listFavorites[index].thumbnail ??
+                        ctrl.listFavorites[index].url,
                     imageBuilder: (context, imageProvider) {
                       return FavImage(
                         imageProvider: imageProvider,
@@ -220,7 +221,8 @@ class FavImage extends StatelessWidget {
                                               .toUpperCase()
                                           : ctrl.listFavorites[index].name,
                                       style: TextStyle(
-                                          color: context.textTheme.headline6!.color,
+                                          color: context
+                                              .textTheme.headline6!.color,
                                           fontSize:
                                               SizeConfig.safeBlockHorizontal *
                                                   kBannerTitleSize,
@@ -235,7 +237,8 @@ class FavImage extends StatelessWidget {
                                             : "by ${ctrl.listFavorites[index].author}",
                                         style: TextStyle(
                                             fontWeight: FontWeight.w400,
-                                            color: context.textTheme.headline5!.color,
+                                            color: context
+                                                .textTheme.headline5!.color,
                                             fontSize:
                                                 SizeConfig.safeBlockHorizontal *
                                                     kBannerAuthorSize),

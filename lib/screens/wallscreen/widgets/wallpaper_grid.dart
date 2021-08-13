@@ -93,7 +93,8 @@ class _WallGridState extends State<WallGrid> {
                     (1.7 * kWallpaperTileImageQuality),
                 memCacheHeight: MediaQuery.of(context).size.height ~/
                     (1.7 * kWallpaperTileImageQuality),
-                imageUrl: ctrl.wallpapers[index].url,
+                imageUrl: ctrl.wallpapers[index].thumbnail ??
+                    ctrl.wallpapers[index].url,
                 imageBuilder: (context, imageProvider) {
                   return WallImage(
                     imageProvider: imageProvider,
@@ -225,7 +226,8 @@ class WallImage extends StatelessWidget {
                                               .toUpperCase()
                                           : ctrl.wallpapers[index].name,
                                       style: TextStyle(
-                                          color: context.textTheme.headline6!.color,
+                                          color: context
+                                              .textTheme.headline6!.color,
                                           fontSize:
                                               SizeConfig.safeBlockHorizontal *
                                                   kBannerTitleSize,
@@ -240,7 +242,8 @@ class WallImage extends StatelessWidget {
                                             : "by ${ctrl.wallpapers[index].author}",
                                         style: TextStyle(
                                             fontWeight: FontWeight.w400,
-                                            color: context.textTheme.headline5!.color,
+                                            color: context
+                                                .textTheme.headline5!.color,
                                             fontSize:
                                                 SizeConfig.safeBlockHorizontal *
                                                     kBannerAuthorSize),

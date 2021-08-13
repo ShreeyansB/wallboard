@@ -166,7 +166,7 @@ class _ImageViewerState extends State<ImageViewer>
               onDoubleTap: _handleDoubleTap,
               onDoubleTapDown: _handleDoubleTapDown,
               child: CachedNetworkImage(
-                imageUrl: widget.wall.url,
+                imageUrl: widget.wall.thumbnail ?? widget.wall.url,
                 maxHeightDiskCache: MediaQuery.of(context).size.height ~/ 0.8,
                 memCacheHeight: MediaQuery.of(context).size.height ~/ 0.8,
                 imageBuilder: (context, imageProvider) {

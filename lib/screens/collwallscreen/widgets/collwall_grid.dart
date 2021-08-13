@@ -81,7 +81,7 @@ class _CollWallGridState extends State<CollWallGrid> {
                     (1.7 * kWallpaperTileImageQuality),
                 memCacheHeight: MediaQuery.of(context).size.height ~/
                     (1.7 * kWallpaperTileImageQuality),
-                imageUrl: ctrl.wallpapers[index].url,
+                imageUrl: ctrl.wallpapers[index].thumbnail ?? ctrl.wallpapers[index].url,
                 imageBuilder: (context, imageProvider) {
                   return CollWallImage(
                     imageProvider: imageProvider,

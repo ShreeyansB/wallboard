@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wall/models/about_model.dart';
 import 'package:wall/utils/size_config.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({Key? key, required this.about, required this.groups})
@@ -93,6 +94,16 @@ class GroupTile extends StatelessWidget {
   final String name;
   final AboutModel about;
 
+  Future<void> _launchInWebViewOrVC(String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+      );
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -142,7 +153,9 @@ class GroupTile extends StatelessWidget {
                   children: [
                     for (var i = 0; i < about.buttons!.length; i++)
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _launchInWebViewOrVC(about.links![i].toString());
+                        },
                         child: Text(
                           about.buttons![i].toString().toUpperCase(),
                           style: TextStyle(

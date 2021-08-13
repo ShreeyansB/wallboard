@@ -132,7 +132,7 @@ class MyApp extends StatelessWidget {
             ThemeData.dark().popupMenuTheme.copyWith(color: dBgColorAlt),
       ),
       customTransition: MyScaleTransition(),
-      transitionDuration: Duration(milliseconds: 300),
+      transitionDuration: Duration(milliseconds: 600),
       home: HomePage(),
     );
   }

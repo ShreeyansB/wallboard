@@ -47,11 +47,10 @@ class _CollWallGridState extends State<CollWallGrid> {
           if (searchController.string.value != "") {
             dbController.dbWallpapers.forEach((wall) {
               if (wall.collection == widget.collectionName &&
-                      wall.name.toLowerCase().contains(
+                  (wall.name.toLowerCase().contains(
                           searchController.string.value.toLowerCase()) ||
-                  (wall.author
-                      .toLowerCase()
-                      .contains(searchController.string.value.toLowerCase()))) {
+                      (wall.author.toLowerCase().contains(
+                          searchController.string.value.toLowerCase())))) {
                 dbController.wallpapers.add(wall);
               }
             });
@@ -214,7 +213,8 @@ class CollWallImage extends StatelessWidget {
                                               .toUpperCase()
                                           : ctrl.wallpapers[index].name,
                                       style: TextStyle(
-                                          color: context.textTheme.headline6!.color,
+                                          color: context
+                                              .textTheme.headline6!.color,
                                           fontSize:
                                               SizeConfig.safeBlockHorizontal *
                                                   kBannerTitleSize,
@@ -229,7 +229,8 @@ class CollWallImage extends StatelessWidget {
                                             : "by ${ctrl.wallpapers[index].author}",
                                         style: TextStyle(
                                             fontWeight: FontWeight.w400,
-                                            color: context.textTheme.headline5!.color,
+                                            color: context
+                                                .textTheme.headline5!.color,
                                             fontSize:
                                                 SizeConfig.safeBlockHorizontal *
                                                     kBannerAuthorSize),

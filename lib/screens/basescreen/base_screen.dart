@@ -234,11 +234,11 @@ class _MySearchAppBarState extends State<MySearchAppBar>
           itemBuilder: (context) {
             return [
               PopupMenuItem(
-                child: Text("Theme"),
+                child: Text("Theme       "),
                 value: MenuOption.theme,
               ),
               PopupMenuItem(
-                child: Text("About"),
+                child: Text("About       "),
                 value: MenuOption.about,
               ),
             ];

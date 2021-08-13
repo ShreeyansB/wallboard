@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wall/controllers/about_controller.dart';
+import 'package:wall/models/about_model.dart';
 import 'package:wall/utils/size_config.dart';
 
 class AboutScreen extends StatelessWidget {
@@ -17,7 +17,10 @@ class AboutScreen extends StatelessWidget {
           name: groups[i],
           about: about.where((a) => a.group == groups[i]).toList()));
       if (i != groups.length - 1) {
-        widgets.add(Divider());
+        widgets.add(Divider(
+          color: context.textTheme.headline6!.color!.withOpacity(0.07),
+          thickness: 1,
+        ));
       }
     }
     return Scaffold(
@@ -39,13 +42,10 @@ class AboutScreen extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: widgets,
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: widgets,
         ),
       ),
     );
@@ -60,13 +60,100 @@ class GroupList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Padding(
+      padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name.toUpperCase(),
+                style: context.textTheme.headline6!.copyWith(
+                    fontSize: SizeConfig.safeBlockVertical * 1.7,
+                    fontWeight: FontWeight.bold,
+                    color: context.theme.accentColor),
+              ),
+              SizedBox(
+                height: 25,
+              ),
+              GroupTile(name: name, about: about[0]),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class GroupTile extends StatelessWidget {
+  const GroupTile({Key? key, required this.name, required this.about})
+      : super(key: key);
+  final String name;
+  final AboutModel about;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          name,
-          style: context.textTheme.headline6!.copyWith(
-              fontSize: SizeConfig.safeBlockHorizontal * 4,
-              color: context.theme.accentColor),
+        Expanded(
+          flex: 1,
+          child: CircleAvatar(
+            backgroundImage: Image.network(about.photo).image,
+            radius: SizeConfig.safeBlockVertical * 3.2,
+          ),
+        ),
+        SizedBox(
+          width: 20,
+        ),
+        Expanded(
+          flex: 5,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                about.name,
+                style: context.textTheme.headline6!.copyWith(
+                    fontSize: SizeConfig.safeBlockVertical * 2,
+                    fontWeight: FontWeight.w600),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              if (about.description != null)
+                Text(
+                  about.description.toString(),
+                  maxLines: 3,
+                  style: context.textTheme.headline6!.copyWith(
+                      fontSize: SizeConfig.safeBlockVertical * 1.5,
+                      fontWeight: FontWeight.w500),
+                ),
+              if (about.buttons != null)
+                SizedBox(
+                  height: 5,
+                ),
+              if (about.buttons != null)
+                Wrap(
+                  direction: Axis.horizontal,
+                  spacing: 8,
+                  children: [
+                    for (var i = 0; i < about.buttons!.length; i++)
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          about.buttons![i].toString().toUpperCase(),
+                          style: TextStyle(
+                              fontSize: SizeConfig.safeBlockVertical * 1.8,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      )
+                  ],
+                )
+            ],
+          ),
         )
       ],
     );

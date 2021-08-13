@@ -202,7 +202,8 @@ class CollImage extends StatelessWidget {
                                         .length
                                         .toString(),
                                     style: TextStyle(
-                                        color: context.textTheme.headline6!.color,
+                                        color:
+                                            context.textTheme.headline6!.color,
                                         fontSize:
                                             SizeConfig.safeBlockHorizontal *
                                                 kBannerFontSize,
@@ -229,8 +230,10 @@ class CollImage extends StatelessWidget {
                   SizeConfig.safeBlockHorizontal * kBorderRadius),
               onTap: () async {
                 Get.to(() => CollWallScreen(
-                      collectionName: collectionName,
-                    ));
+                          collectionName: collectionName,
+                        ))!
+                    .then((value) =>
+                        Get.find<SearchController>().string.value = "");
               },
             ),
           ),

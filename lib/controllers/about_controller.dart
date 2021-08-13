@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:wall/models/about_model.dart';
+import 'package:wallboard/models/about_model.dart';
 
 class AboutController extends GetxController {
   List<AboutModel> about = [];

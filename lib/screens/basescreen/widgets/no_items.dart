@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wall/utils/size_config.dart';
+import 'package:wallboard/utils/size_config.dart';
 import 'package:get/get.dart';
 
 class NoItems extends StatelessWidget {

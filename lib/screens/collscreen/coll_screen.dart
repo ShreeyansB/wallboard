@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wall/controllers/database_controller.dart';
-import 'package:wall/screens/collscreen/widgets/collection_grid.dart';
+import 'package:wallboard/controllers/database_controller.dart';
+import 'package:wallboard/screens/collscreen/widgets/collection_grid.dart';
 
 class CollScreen extends StatefulWidget {
   const CollScreen({Key? key}) : super(key: key);

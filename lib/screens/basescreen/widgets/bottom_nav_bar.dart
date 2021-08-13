@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wall/controllers/navigation_controller.dart';
-import 'package:wall/dev_settings.dart';
-import 'package:wall/utils/size_config.dart';
+import 'package:wallboard/controllers/navigation_controller.dart';
+import 'package:wallboard/dev_settings.dart';
+import 'package:wallboard/utils/size_config.dart';
 
 class MyBottomNavBar extends StatefulWidget {
   const MyBottomNavBar({Key? key}) : super(key: key);

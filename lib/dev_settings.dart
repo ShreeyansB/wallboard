@@ -60,8 +60,8 @@ const String kCollectionNameIfNull = "Others";
 
 // WALLPAPER SCREEN SETTINGS
 
-const double kBorderRadius = 3;
-const double kBlurAmount = 0;
+const double kBorderRadius = 4;
+const double kBlurAmount = 12;
 
 const double kGridViewPadding = 5;
 const double kGridSpacing = 5;
@@ -70,7 +70,7 @@ const int kGridCount = 2;
 
 const double kBannerHeight = 8;
 const double kBorderRadiusTop = 0;
-const double kBorderRadiusBottom = 3;
+const double kBorderRadiusBottom = 4;
 const Alignment kBannerAlignment = Alignment.bottomCenter;
 const double kBannerTitleSize = 3.2;
 const double kBannerAuthorSize = 2.5;
@@ -84,6 +84,7 @@ const bool kIsAuthorUppercase = false;
 const double kWallpaperTileImageQuality = 2;
 
 // COLLECTION SCREEN SETTINGS
+
 const double kBannerFontSize = 4;
 const bool kShowCollectionCount = true;
 const bool kIsTextUppercase = true;

@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wall/controllers/database_controller.dart';
-import 'package:wall/dev_settings.dart';
-import 'package:wall/utils/size_config.dart';
+import 'package:wallboard/controllers/database_controller.dart';
+import 'package:wallboard/dev_settings.dart';
+import 'package:wallboard/utils/size_config.dart';
 
 class LikeButton extends StatefulWidget {
   const LikeButton(

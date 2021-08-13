@@ -1,4 +1,4 @@
-package com.ballistic.wall
+package com.ballistic.wallboard
 
 import android.content.Intent
 import android.net.Uri

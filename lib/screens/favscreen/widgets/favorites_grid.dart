@@ -3,17 +3,17 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wall/controllers/database_controller.dart';
-import 'package:wall/controllers/navigation_controller.dart';
-import 'package:wall/controllers/palette_controller.dart';
-import 'package:wall/controllers/search_controller.dart';
-import 'package:wall/controllers/slide_controller.dart';
-import 'package:wall/dev_settings.dart';
-import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
-import 'package:wall/screens/basescreen/widgets/image_viewer.dart';
-import 'package:wall/screens/basescreen/widgets/like_button.dart';
-import 'package:wall/screens/basescreen/widgets/no_items.dart';
-import 'package:wall/utils/size_config.dart';
+import 'package:wallboard/controllers/database_controller.dart';
+import 'package:wallboard/controllers/navigation_controller.dart';
+import 'package:wallboard/controllers/palette_controller.dart';
+import 'package:wallboard/controllers/search_controller.dart';
+import 'package:wallboard/controllers/slide_controller.dart';
+import 'package:wallboard/dev_settings.dart';
+import 'package:wallboard/screens/basescreen/widgets/conditional_parent.dart';
+import 'package:wallboard/screens/basescreen/widgets/image_viewer.dart';
+import 'package:wallboard/screens/basescreen/widgets/like_button.dart';
+import 'package:wallboard/screens/basescreen/widgets/no_items.dart';
+import 'package:wallboard/utils/size_config.dart';
 
 class FavGrid extends StatefulWidget {
   const FavGrid({Key? key}) : super(key: key);

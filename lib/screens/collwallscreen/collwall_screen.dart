@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wall/controllers/database_controller.dart';
-import 'package:wall/dev_settings.dart';
-import 'package:wall/screens/basescreen/base_screen.dart';
-import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
-import 'package:wall/screens/collwallscreen/widgets/collwall_grid.dart';
-import 'package:wall/utils/size_config.dart';
+import 'package:wallboard/controllers/database_controller.dart';
+import 'package:wallboard/dev_settings.dart';
+import 'package:wallboard/screens/basescreen/base_screen.dart';
+import 'package:wallboard/screens/basescreen/widgets/conditional_parent.dart';
+import 'package:wallboard/screens/collwallscreen/widgets/collwall_grid.dart';
+import 'package:wallboard/utils/size_config.dart';
 
 class CollWallScreen extends StatefulWidget {
   const CollWallScreen({Key? key, required this.collectionName})

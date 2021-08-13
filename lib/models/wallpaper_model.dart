@@ -1,4 +1,4 @@
-import 'package:wall/dev_settings.dart';
+import 'package:wallboard/dev_settings.dart';
 
 class WallpaperModel {
   String name;

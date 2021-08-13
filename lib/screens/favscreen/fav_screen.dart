@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wall/controllers/database_controller.dart';
-import 'package:wall/screens/favscreen/widgets/favorites_grid.dart';
+import 'package:wallboard/controllers/database_controller.dart';
+import 'package:wallboard/screens/favscreen/widgets/favorites_grid.dart';
 
 class FavScreen extends StatefulWidget {
   const FavScreen({Key? key}) : super(key: key);

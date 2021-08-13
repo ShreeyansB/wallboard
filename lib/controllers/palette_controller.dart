@@ -7,7 +7,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:get/get.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:wall/models/wallpaper_model.dart';
+import 'package:wallboard/models/wallpaper_model.dart';
 
 void computePalette(SendPort isolateToMain) async {
   ReceivePort mainToIsolate = ReceivePort();

@@ -3,14 +3,14 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wall/controllers/database_controller.dart';
-import 'package:wall/controllers/navigation_controller.dart';
-import 'package:wall/controllers/search_controller.dart';
-import 'package:wall/dev_settings.dart';
-import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
-import 'package:wall/screens/basescreen/widgets/no_items.dart';
-import 'package:wall/screens/collwallscreen/collwall_screen.dart';
-import 'package:wall/utils/size_config.dart';
+import 'package:wallboard/controllers/database_controller.dart';
+import 'package:wallboard/controllers/navigation_controller.dart';
+import 'package:wallboard/controllers/search_controller.dart';
+import 'package:wallboard/dev_settings.dart';
+import 'package:wallboard/screens/basescreen/widgets/conditional_parent.dart';
+import 'package:wallboard/screens/basescreen/widgets/no_items.dart';
+import 'package:wallboard/screens/collwallscreen/collwall_screen.dart';
+import 'package:wallboard/utils/size_config.dart';
 
 class CollGrid extends StatefulWidget {
   const CollGrid({Key? key}) : super(key: key);

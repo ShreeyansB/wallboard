@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:wall/controllers/about_controller.dart';
-import 'package:wall/controllers/database_controller.dart';
-import 'package:wall/controllers/navigation_controller.dart';
-import 'package:wall/controllers/palette_controller.dart';
-import 'package:wall/controllers/search_controller.dart';
-import 'package:wall/controllers/slide_controller.dart';
-import 'package:wall/dev_settings.dart';
-import 'package:wall/screens/basescreen/base_screen.dart';
+import 'package:wallboard/controllers/about_controller.dart';
+import 'package:wallboard/controllers/database_controller.dart';
+import 'package:wallboard/controllers/navigation_controller.dart';
+import 'package:wallboard/controllers/palette_controller.dart';
+import 'package:wallboard/controllers/search_controller.dart';
+import 'package:wallboard/controllers/slide_controller.dart';
+import 'package:wallboard/dev_settings.dart';
+import 'package:wallboard/screens/basescreen/base_screen.dart';
 
 void main() async {
   Paint.enableDithering = true;

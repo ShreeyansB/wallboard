@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wall/controllers/database_controller.dart';
-import 'package:wall/screens/wallscreen/widgets/wallpaper_grid.dart';
+import 'package:wallboard/controllers/database_controller.dart';
+import 'package:wallboard/screens/wallscreen/widgets/wallpaper_grid.dart';
 
 class WallScreen extends StatefulWidget {
   const WallScreen({Key? key}) : super(key: key);

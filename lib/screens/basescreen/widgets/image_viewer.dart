@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:wall/controllers/palette_controller.dart';
-import 'package:wall/controllers/slide_controller.dart';
-import 'package:wall/dev_settings.dart';
-import 'package:wall/models/wallpaper_model.dart';
-import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
-import 'package:wall/screens/basescreen/widgets/like_button.dart';
-import 'package:wall/utils/size_config.dart';
+import 'package:wallboard/controllers/palette_controller.dart';
+import 'package:wallboard/controllers/slide_controller.dart';
+import 'package:wallboard/dev_settings.dart';
+import 'package:wallboard/models/wallpaper_model.dart';
+import 'package:wallboard/screens/basescreen/widgets/conditional_parent.dart';
+import 'package:wallboard/screens/basescreen/widgets/like_button.dart';
+import 'package:wallboard/utils/size_config.dart';
 
 class ImageViewer extends StatefulWidget {
   const ImageViewer({Key? key, required this.wall}) : super(key: key);

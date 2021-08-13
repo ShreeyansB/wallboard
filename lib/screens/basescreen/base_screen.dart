@@ -1,16 +1,16 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wall/controllers/about_controller.dart';
-import 'package:wall/controllers/database_controller.dart';
-import 'package:wall/controllers/navigation_controller.dart';
-import 'package:wall/controllers/search_controller.dart';
-import 'package:wall/dev_settings.dart';
-import 'package:wall/screens/aboutscreen/about_screen.dart';
-import 'package:wall/screens/basescreen/widgets/bottom_nav_bar.dart';
-import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
-import 'package:wall/screens/basescreen/widgets/theme_dialog.dart';
-import 'package:wall/utils/size_config.dart';
+import 'package:wallboard/controllers/about_controller.dart';
+import 'package:wallboard/controllers/database_controller.dart';
+import 'package:wallboard/controllers/navigation_controller.dart';
+import 'package:wallboard/controllers/search_controller.dart';
+import 'package:wallboard/dev_settings.dart';
+import 'package:wallboard/screens/aboutscreen/about_screen.dart';
+import 'package:wallboard/screens/basescreen/widgets/bottom_nav_bar.dart';
+import 'package:wallboard/screens/basescreen/widgets/conditional_parent.dart';
+import 'package:wallboard/screens/basescreen/widgets/theme_dialog.dart';
+import 'package:wallboard/utils/size_config.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);

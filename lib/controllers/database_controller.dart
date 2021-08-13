@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:wall/dev_settings.dart';
-import 'package:wall/models/wallpaper_model.dart';
+import 'package:wallboard/dev_settings.dart';
+import 'package:wallboard/models/wallpaper_model.dart';
 
 class DatabaseProvider extends GetConnect {
   static String jsonURL =
@@ -58,10 +58,13 @@ class DatabaseController extends GetxController {
       collections.add(kCollectionNameIfNull);
       collections.remove(kCollectionNameIfNull);
 
+      dbWallpapers = dbWallpapers.reversed.toList();
+
       var tempFav = List<String>.from(storage.read('fav') ?? []);
       dbFavorites =
           dbWallpapers.where((wall) => tempFav.contains(wall.url)).toList();
       listFavorites = dbFavorites.toList();
+
       update();
       return true;
     }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wall/models/about_model.dart';
-import 'package:wall/utils/size_config.dart';
+import 'package:wallboard/models/about_model.dart';
+import 'package:wallboard/utils/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutScreen extends StatelessWidget {

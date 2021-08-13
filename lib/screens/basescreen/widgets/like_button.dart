@@ -203,7 +203,7 @@ class _LikeButtonBGState extends State<LikeButtonBG>
         },
         child: Container(
           decoration: BoxDecoration(
-              color: kBannerTitleColor.withOpacity(0.27),
+              color: context.textTheme.headline2!.color,
               borderRadius: BorderRadius.circular(
                   SizeConfig.safeBlockHorizontal * kBorderRadius)),
           padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal * 3),

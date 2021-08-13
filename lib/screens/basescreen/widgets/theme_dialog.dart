@@ -23,7 +23,7 @@ class _ThemeDialogState extends State<ThemeDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Select theme"),
+      title: Text("Select theme", style: TextStyle(fontWeight: FontWeight.bold),),
       backgroundColor: context.theme.colorScheme.secondary,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(

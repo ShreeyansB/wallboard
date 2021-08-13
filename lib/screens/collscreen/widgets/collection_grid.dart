@@ -162,7 +162,7 @@ class CollImage extends StatelessWidget {
                     child: child,
                   ),
                   child: Container(
-                    color: kBannerColor,
+                    color: context.textTheme.headline1!.color,
                     child: DefaultTextStyle(
                       style: Theme.of(context).textTheme.headline6!,
                       maxLines: 1,
@@ -183,7 +183,7 @@ class CollImage extends StatelessWidget {
                                     ? collectionName.toUpperCase()
                                     : collectionName,
                                 style: TextStyle(
-                                    color: kBannerTitleColor,
+                                    color: context.textTheme.headline6!.color,
                                     fontSize: SizeConfig.safeBlockHorizontal *
                                         kBannerFontSize,
                                     fontWeight: FontWeight.w600,
@@ -202,7 +202,7 @@ class CollImage extends StatelessWidget {
                                         .length
                                         .toString(),
                                     style: TextStyle(
-                                        color: kBannerTitleColor,
+                                        color: context.textTheme.headline6!.color,
                                         fontSize:
                                             SizeConfig.safeBlockHorizontal *
                                                 kBannerFontSize,

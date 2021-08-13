@@ -190,7 +190,7 @@ class WallImage extends StatelessWidget {
                     child: child,
                   ),
                   child: Container(
-                    color: kBannerColor,
+                    color: context.textTheme.headline1!.color,
                     child: DefaultTextStyle(
                       style: Theme.of(context).textTheme.headline6!,
                       maxLines: 1,
@@ -225,7 +225,7 @@ class WallImage extends StatelessWidget {
                                               .toUpperCase()
                                           : ctrl.wallpapers[index].name,
                                       style: TextStyle(
-                                          color: kBannerTitleColor,
+                                          color: context.textTheme.headline6!.color,
                                           fontSize:
                                               SizeConfig.safeBlockHorizontal *
                                                   kBannerTitleSize,
@@ -240,7 +240,7 @@ class WallImage extends StatelessWidget {
                                             : "by ${ctrl.wallpapers[index].author}",
                                         style: TextStyle(
                                             fontWeight: FontWeight.w400,
-                                            color: kBannerAuthorColor,
+                                            color: context.textTheme.headline5!.color,
                                             fontSize:
                                                 SizeConfig.safeBlockHorizontal *
                                                     kBannerAuthorSize),

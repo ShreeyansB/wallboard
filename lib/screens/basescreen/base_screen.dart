@@ -1,10 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wall/controllers/about_controller.dart';
 import 'package:wall/controllers/database_controller.dart';
 import 'package:wall/controllers/navigation_controller.dart';
 import 'package:wall/controllers/search_controller.dart';
 import 'package:wall/dev_settings.dart';
+import 'package:wall/screens/aboutscreen/about_screen.dart';
 import 'package:wall/screens/basescreen/widgets/bottom_nav_bar.dart';
 import 'package:wall/screens/basescreen/widgets/conditional_parent.dart';
 import 'package:wall/screens/basescreen/widgets/theme_dialog.dart';
@@ -34,8 +36,8 @@ class _HomePageState extends State<HomePage> {
                 gradient: RadialGradient(
                   colors: [
                     Theme.of(context).brightness == Brightness.light
-                        ? kGradientColorLight
-                        : kGradientColorDark,
+                        ? lGradientColor
+                        : dGradientColor,
                     Colors.transparent
                   ],
                   center: Alignment.bottomRight,
@@ -84,8 +86,10 @@ enum MenuOption { theme, about }
 class MySearchAppBar extends StatefulWidget implements PreferredSizeWidget {
   final double height = 60.0;
   final String? title;
+  final bool showBackButton;
 
-  const MySearchAppBar({Key? key, this.title}) : super(key: key);
+  const MySearchAppBar({Key? key, this.title, this.showBackButton = false})
+      : super(key: key);
   @override
   _MySearchAppBarState createState() => _MySearchAppBarState();
 
@@ -142,12 +146,19 @@ class _MySearchAppBarState extends State<MySearchAppBar>
       color: context.theme.textTheme.headline6!.color,
       size: SizeConfig.safeBlockHorizontal * 7,
     );
-
     return AppBar(
       toolbarHeight: kToolbarHeight + SizeConfig.safeBlockVertical * 1,
       textTheme: Theme.of(context).textTheme,
-      backgroundColor: Colors.transparent,
+      backgroundColor: context.theme.appBarTheme.backgroundColor,
       elevation: 0,
+      leading: widget.showBackButton
+          ? IconButton(
+              onPressed: () => Get.back(),
+              icon: Icon(Icons.arrow_back_ios_rounded,
+                  color: context.textTheme.headline6!.color),
+              iconSize: SizeConfig.safeBlockHorizontal * 7.4,
+            )
+          : null,
       title: Obx(() {
         if (showSearch.value) {
           return Obx(() => TextField(
@@ -194,7 +205,6 @@ class _MySearchAppBarState extends State<MySearchAppBar>
         ),
         PopupMenuButton<MenuOption>(
           iconSize: SizeConfig.safeBlockHorizontal * 8,
-          color: kBgColorDarkLighter,
           icon: Icon(
             Icons.more_vert_rounded,
             color: context.textTheme.headline6!.color,
@@ -212,8 +222,13 @@ class _MySearchAppBarState extends State<MySearchAppBar>
                 Get.changeThemeMode(result);
                 Get.find<DatabaseController>().setThemeType(result);
               }
+            } else if (value == MenuOption.about) {
+              Get.to(() => AboutScreen(
+                    about: Get.find<AboutController>().about,
+                    groups: Get.find<AboutController>().groups,
+                  ));
             } else {
-              print("boo");
+              print("null");
             }
           },
           itemBuilder: (context) {

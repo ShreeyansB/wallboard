@@ -33,8 +33,8 @@ class _CollWallScreenState extends State<CollWallScreen> {
                 gradient: RadialGradient(
                   colors: [
                     Theme.of(context).brightness == Brightness.light
-                        ? kGradientColorLight
-                        : kGradientColorDark,
+                        ? lGradientColor
+                        : dGradientColor,
                     Colors.transparent
                   ],
                   center: Alignment.bottomRight,
@@ -45,7 +45,7 @@ class _CollWallScreenState extends State<CollWallScreen> {
         },
         child: Scaffold(
             backgroundColor: Colors.transparent,
-            appBar: MySearchAppBar(title: widget.collectionName,),
+            appBar: MySearchAppBar(title: widget.collectionName, showBackButton: true,),
             body: CollWallGrid(collectionName: widget.collectionName)),
       ),
     );

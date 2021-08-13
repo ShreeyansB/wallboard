@@ -2,29 +2,59 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // BASE SETTINGS
+
 const String kAppName = "Wallpapers";
 
-// THEME SETTINGS
+// THEME SETTINGS - Common
 
 const bool kIsBgGradient = false;
-const Color kGradientColorLight = Colors.black26;
-const Color kGradientColorDark = Colors.white54;
-
-const Color kBgColorLight = Color(0xfff6e6ff);
-const Color kBgColorDark = Color(0xff0B0A1F);
-const Color kBgColorDarkLighter = Color(0xff19173b);
-
-const Color kAppbarColorLight = Color(0xfff6e6ff);
-const Color kAppbarColorDark = Color(0xff0B0A1F);
-
-const Color kBottombarColorLight = Color(0xfff6e6ff);
-const Color kBottombarColorDark = Color(0xff0B0A1F);
 
 var kBaseTextTheme = GoogleFonts.robotoMonoTextTheme;
 var kBaseTextStyle = GoogleFonts.robotoMono;
 Color kLikeButtonColor = Colors.red.shade600;
 
+// THEME SETTINGS - Dark
+
+MaterialColor dPrimarySwatch = Colors.deepPurple;
+Color dAccentColor = Colors.deepPurpleAccent.shade100;
+Color dSplashColor = Colors.white10;
+
+Color dGradientColor = Colors.white54;
+
+Color dBgColor = Color(0xff0B0A1F);
+Color dBgColorAlt = Color(0xff19173b);
+
+Color dAppbarColor = Color(0xff0B0A1F);
+Color dBottombarColor = Color(0xff0B0A1F);
+
+Color dBannerColor = Colors.black38;
+Color dBannerTitleColor = Colors.white;
+Color dBannerAuthorColor = Colors.white60;
+
+Color dButtonBgColor = Colors.white30;
+
+// THEME SETTINGS - Light
+
+MaterialColor lPrimarySwatch = Colors.deepPurple;
+Color lAccentColor = Colors.deepPurpleAccent;
+Color lSplashColor = Colors.black12;
+
+Color lGradientColor = Colors.black26;
+
+Color lBgColor = Color(0xfffbf5ff);
+Color lBgColorAlt = Color(0xfff8edff);
+
+Color lAppbarColor = Color(0xfffbf5ff);
+Color lBottombarColor = Color(0xfffbf5ff);
+
+Color lBannerColor = Colors.white70;
+Color lBannerTitleColor = Colors.black;
+Color lBannerAuthorColor = Colors.black87;
+
+Color lButtonBgColor = Colors.black26;
+
 // DATABASE SETTINGS
+
 const String kAuthorNameIfNull = "Anon";
 const String kCollectionNameIfNull = "Others";
 
@@ -42,9 +72,6 @@ const double kBannerHeight = 8;
 const double kBorderRadiusTop = 0;
 const double kBorderRadiusBottom = 3;
 const Alignment kBannerAlignment = Alignment.bottomCenter;
-const Color kBannerColor = Colors.black38;
-const Color kBannerTitleColor = Colors.white;
-const Color kBannerAuthorColor = Colors.white60;
 const double kBannerTitleSize = 3.2;
 const double kBannerAuthorSize = 2.5;
 const double kBannerPadding = 3.2;

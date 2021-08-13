@@ -113,8 +113,8 @@ class _ImageViewerState extends State<ImageViewer>
         child: AppBar(
           leading: IconButton(
             onPressed: () => Get.back(),
-            icon: Icon(Icons.arrow_back_ios_rounded),
-            iconSize: SizeConfig.safeBlockHorizontal * 7,
+            icon: Icon(Icons.arrow_back_ios_rounded, color: context.textTheme.headline6!.color),
+            iconSize: SizeConfig.safeBlockHorizontal * 7.4,
           ),
           title: Hero(
             tag: widget.wall.url,
@@ -131,7 +131,7 @@ class _ImageViewerState extends State<ImageViewer>
                   widget.wall.name,
                   maxLines: 1,
                   style: TextStyle(
-                      color: kBannerTitleColor,
+                      color: context.textTheme.headline6!.color,
                       fontSize: SizeConfig.safeBlockHorizontal * 5,
                       fontWeight: FontWeight.w600,
                       decoration: TextDecoration.none),
@@ -142,14 +142,14 @@ class _ImageViewerState extends State<ImageViewer>
                     maxLines: 1,
                     style: context.textTheme.headline6!.copyWith(
                         fontWeight: FontWeight.w400,
-                        color: kBannerAuthorColor,
+                        color: context.textTheme.headline5!.color,
                         fontSize: SizeConfig.safeBlockHorizontal * 3),
                   ),
               ],
             ),
           ),
           elevation: 0,
-          backgroundColor: kBannerColor,
+          backgroundColor: context.textTheme.headline1!.color,
         ),
       ),
       body: Stack(
@@ -305,7 +305,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         ),
       ),
       child: Container(
-        color: kBannerColor,
+        color: context.textTheme.headline1!.color,
         width: double.infinity,
         padding: EdgeInsets.only(
             left: SizeConfig.safeBlockHorizontal * 10,
@@ -320,7 +320,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
               widget.wall.name,
               maxLines: 1,
               style: context.textTheme.headline6!.copyWith(
-                color: kBannerTitleColor,
+                color: context.textTheme.headline6!.color,
                 fontSize: SizeConfig.safeBlockHorizontal * 7.6,
                 fontWeight: FontWeight.w600,
               ),
@@ -329,7 +329,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
               Text(
                 "by ${widget.wall.author}",
                 style: context.textTheme.headline6!.copyWith(
-                  color: kBannerAuthorColor,
+                  color: context.textTheme.headline5!.color,
                   fontSize: SizeConfig.safeBlockHorizontal * 4.4,
                   fontWeight: FontWeight.w500,
                 ),
@@ -346,12 +346,12 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                         text: "Dimensions: ",
                         style: TextStyle(
                             fontSize: SizeConfig.safeBlockHorizontal * 3.6,
-                            color: kBannerAuthorColor)),
+                            color: context.textTheme.headline5!.color)),
                     TextSpan(
                         text: widget.wall.dimensions,
                         style: TextStyle(
                             fontSize: SizeConfig.safeBlockHorizontal * 3.6,
-                            color: kBannerTitleColor)),
+                            color: context.textTheme.headline6!.color)),
                   ],
                 ),
               ),
@@ -364,12 +364,12 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                         text: "Size: ",
                         style: TextStyle(
                             fontSize: SizeConfig.safeBlockHorizontal * 3.6,
-                            color: kBannerAuthorColor)),
+                            color: context.textTheme.headline5!.color)),
                     TextSpan(
                         text: widget.wall.size,
                         style: TextStyle(
                             fontSize: SizeConfig.safeBlockHorizontal * 3.6,
-                            color: kBannerTitleColor)),
+                            color: context.textTheme.headline6!.color)),
                   ],
                 ),
               ),
@@ -382,12 +382,12 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                         text: "License: ",
                         style: TextStyle(
                             fontSize: SizeConfig.safeBlockHorizontal * 3.6,
-                            color: kBannerAuthorColor)),
+                            color: context.textTheme.headline5!.color)),
                     TextSpan(
                         text: widget.wall.license,
                         style: TextStyle(
                             fontSize: SizeConfig.safeBlockHorizontal * 3.6,
-                            color: kBannerTitleColor)),
+                            color: context.textTheme.headline6!.color)),
                   ],
                 ),
               ),
@@ -541,10 +541,11 @@ class SheetButton extends StatelessWidget {
             child: widget == null
                 ? InkWell(
                     onTap: onPressed ?? () => print("Boo"),
+                    splashColor: context.theme.splashColor,
                     splashFactory: context.theme.splashFactory,
                     child: Container(
                       decoration: BoxDecoration(
-                          color: kBannerTitleColor.withOpacity(0.27),
+                          color: context.textTheme.headline2!.color,
                           borderRadius: BorderRadius.circular(
                               SizeConfig.safeBlockHorizontal * kBorderRadius)),
                       padding:
@@ -553,7 +554,7 @@ class SheetButton extends StatelessWidget {
                         icon,
                         style: context.theme.textTheme.headline6!.copyWith(
                             fontFamily: "RemixIcons",
-                            color: kBannerTitleColor,
+                            color: context.textTheme.headline6!.color,
                             fontSize: SizeConfig.safeBlockHorizontal * 6),
                       ),
                     ),
@@ -567,7 +568,7 @@ class SheetButton extends StatelessWidget {
         Text(
           caption,
           style: context.theme.textTheme.headline6!.copyWith(
-              color: kBannerTitleColor,
+              color: context.textTheme.headline6!.color,
               fontSize: SizeConfig.safeBlockHorizontal * 2.7),
         ),
       ],

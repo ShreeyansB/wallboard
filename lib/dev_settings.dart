@@ -21,11 +21,11 @@ Color dSplashColor = Colors.white10;
 
 Color dGradientColor = Colors.white54;
 
-Color dBgColor = Color(0xff0B0A1F);
+Color dBgColor = Color(0xff0e0d1f);
 Color dBgColorAlt = Color(0xff19173b);
 
-Color dAppbarColor = Color(0xff0B0A1F);
-Color dBottombarColor = Color(0xff0B0A1F);
+Color dAppbarColor = Color(0xff0e0d1f);
+Color dBottombarColor = Color(0xff0e0d1f);
 
 Color dBannerColor = Colors.black38;
 Color dBannerTitleColor = Colors.white;

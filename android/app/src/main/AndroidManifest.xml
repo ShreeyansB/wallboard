@@ -19,6 +19,7 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="wall">
         <meta-data
             android:name="com.google.android.actions"

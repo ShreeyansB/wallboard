@@ -27,7 +27,7 @@ Color dBgColorAlt = Color(0xff19173b);
 Color dAppbarColor = Color(0xff0e0d1f);
 Color dBottombarColor = Color(0xff0e0d1f);
 
-Color dBannerColor = Colors.black38;
+Color dBannerColor = Colors.black45;
 Color dBannerTitleColor = Colors.white;
 Color dBannerAuthorColor = Colors.white60;
 
@@ -61,7 +61,7 @@ const String kCollectionNameIfNull = "Others";
 // WALLPAPER SCREEN SETTINGS
 
 const double kBorderRadius = 4;
-const double kBlurAmount = 12;
+const double kBlurAmount = 0;
 
 const double kGridViewPadding = 5;
 const double kGridSpacing = 5;

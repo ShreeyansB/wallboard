@@ -19,10 +19,25 @@ class CollGrid extends StatefulWidget {
   _CollGridState createState() => _CollGridState();
 }
 
-class _CollGridState extends State<CollGrid> {
+class _CollGridState extends State<CollGrid> with TickerProviderStateMixin {
   ScrollController _scrollController = ScrollController();
   var dbController = Get.find<DatabaseController>();
   var searchController = Get.find<SearchController>();
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 1000),
+    vsync: this,
+  );
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeIn,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.forward();
+  }
 
   @override
   void dispose() {
@@ -52,6 +67,8 @@ class _CollGridState extends State<CollGrid> {
                         .contains(searchController.string.value.toLowerCase()))
                       listCollections.add(coll);
                   });
+                  _controller.value = 0;
+                  _controller.forward();
                 }
 
                 if (searchController.string.value == "") {
@@ -77,34 +94,39 @@ class _CollGridState extends State<CollGrid> {
                     mainAxisSpacing:
                         SizeConfig.safeBlockHorizontal * kGridSpacing),
                 itemBuilder: (context, index) {
-                  return CachedNetworkImage(
-                    maxHeightDiskCache: MediaQuery.of(context).size.height ~/
-                        (1.9 * kCollectionTileImageQuality),
-                    memCacheHeight: MediaQuery.of(context).size.height ~/
-                        (1.9 * kCollectionTileImageQuality),
-                    imageUrl: ctrl.dbWallpapers
-                        .firstWhere(
-                            (wall) => wall.collection == listCollections[index])
-                        .thumbnail ?? ctrl.dbWallpapers
-                        .firstWhere(
-                            (wall) => wall.collection == listCollections[index])
-                        .url,
-                    imageBuilder: (context, imageProvider) {
-                      return CollImage(
-                        imageProvider: imageProvider,
-                        collectionName: listCollections[index],
-                        ctrl: ctrl,
-                      );
-                    },
-                    placeholder: (context, url) => Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          SizeConfig.safeBlockHorizontal * kBorderRadius,
-                        ),
-                        color: context.textTheme.headline6!.color!
-                            .withOpacity(0.01)),
-                  ),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  return FadeTransition(
+                    opacity: _animation,
+                    child: CachedNetworkImage(
+                      maxHeightDiskCache: MediaQuery.of(context).size.height ~/
+                          (1.9 * kCollectionTileImageQuality),
+                      memCacheHeight: MediaQuery.of(context).size.height ~/
+                          (1.9 * kCollectionTileImageQuality),
+                      imageUrl: ctrl.dbWallpapers
+                              .firstWhere((wall) =>
+                                  wall.collection == listCollections[index])
+                              .thumbnail ??
+                          ctrl.dbWallpapers
+                              .firstWhere((wall) =>
+                                  wall.collection == listCollections[index])
+                              .url,
+                      imageBuilder: (context, imageProvider) {
+                        return CollImage(
+                          imageProvider: imageProvider,
+                          collectionName: listCollections[index],
+                          ctrl: ctrl,
+                        );
+                      },
+                      placeholder: (context, url) => Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              SizeConfig.safeBlockHorizontal * kBorderRadius,
+                            ),
+                            color: context.textTheme.headline6!.color!
+                                .withOpacity(0.02)),
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
                   );
                 },
               );

@@ -22,10 +22,25 @@ class FavGrid extends StatefulWidget {
   _FavGridState createState() => _FavGridState();
 }
 
-class _FavGridState extends State<FavGrid> {
+class _FavGridState extends State<FavGrid> with TickerProviderStateMixin {
   ScrollController _scrollController = ScrollController();
   var dbController = Get.find<DatabaseController>();
   var searchController = Get.find<SearchController>();
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 1000),
+    vsync: this,
+  );
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeIn,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.forward();
+  }
 
   @override
   void dispose() {
@@ -57,6 +72,8 @@ class _FavGridState extends State<FavGrid> {
                       dbController.listFavorites.add(wall);
                     }
                   });
+                  _controller.value = 0;
+                  _controller.forward();
                 }
 
                 if (searchController.string.value == "") {
@@ -83,29 +100,33 @@ class _FavGridState extends State<FavGrid> {
                     mainAxisSpacing:
                         SizeConfig.safeBlockHorizontal * kGridSpacing),
                 itemBuilder: (context, index) {
-                  return CachedNetworkImage(
-                    maxHeightDiskCache: MediaQuery.of(context).size.height ~/
-                        (1.7 * kWallpaperTileImageQuality),
-                    memCacheHeight: MediaQuery.of(context).size.height ~/
-                        (1.7 * kWallpaperTileImageQuality),
-                    imageUrl: ctrl.listFavorites[index].thumbnail ??
-                        ctrl.listFavorites[index].url,
-                    imageBuilder: (context, imageProvider) {
-                      return FavImage(
-                        imageProvider: imageProvider,
-                        index: index,
-                        ctrl: ctrl,
-                      );
-                    },
-                    placeholder: (context, url) => Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          SizeConfig.safeBlockHorizontal * kBorderRadius,
-                        ),
-                        color: context.textTheme.headline6!.color!
-                            .withOpacity(0.01)),
-                  ),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  return FadeTransition(
+                    opacity: _animation,
+                    child: CachedNetworkImage(
+                      maxHeightDiskCache: MediaQuery.of(context).size.height ~/
+                          (1.7 * kWallpaperTileImageQuality),
+                      memCacheHeight: MediaQuery.of(context).size.height ~/
+                          (1.7 * kWallpaperTileImageQuality),
+                      imageUrl: ctrl.listFavorites[index].thumbnail ??
+                          ctrl.listFavorites[index].url,
+                      imageBuilder: (context, imageProvider) {
+                        return FavImage(
+                          imageProvider: imageProvider,
+                          index: index,
+                          ctrl: ctrl,
+                        );
+                      },
+                      placeholder: (context, url) => Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              SizeConfig.safeBlockHorizontal * kBorderRadius,
+                            ),
+                            color: context.textTheme.headline6!.color!
+                                .withOpacity(0.02)),
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
                   );
                 },
               );
@@ -182,9 +203,10 @@ class FavImage extends StatelessWidget {
                   condition: kBlurAmount != 0,
                   conditionalBuilder: (child) => BackdropFilter(
                     filter: ImageFilter.blur(
-                        sigmaX: kBlurAmount,
-                        sigmaY: kBlurAmount,
-                        tileMode: TileMode.decal),
+                      sigmaX: kBlurAmount,
+                      sigmaY: kBlurAmount,
+                      tileMode: TileMode.decal,
+                    ),
                     child: child,
                   ),
                   child: Container(

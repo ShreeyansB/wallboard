@@ -21,10 +21,26 @@ class CollWallGrid extends StatefulWidget {
   _CollWallGridState createState() => _CollWallGridState();
 }
 
-class _CollWallGridState extends State<CollWallGrid> {
+class _CollWallGridState extends State<CollWallGrid>
+    with TickerProviderStateMixin {
   ScrollController _scrollController = ScrollController();
   var dbController = Get.find<DatabaseController>();
   var searchController = Get.find<SearchController>();
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 1000),
+    vsync: this,
+  );
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeIn,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.forward();
+  }
 
   @override
   void dispose() {
@@ -54,6 +70,8 @@ class _CollWallGridState extends State<CollWallGrid> {
                 dbController.wallpapers.add(wall);
               }
             });
+            _controller.value = 0;
+            _controller.forward();
           }
 
           if (searchController.string.value == "") {
@@ -76,28 +94,33 @@ class _CollWallGridState extends State<CollWallGrid> {
                 crossAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing,
                 mainAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing),
             itemBuilder: (context, index) {
-              return CachedNetworkImage(
-                maxHeightDiskCache: MediaQuery.of(context).size.height ~/
-                    (1.7 * kWallpaperTileImageQuality),
-                memCacheHeight: MediaQuery.of(context).size.height ~/
-                    (1.7 * kWallpaperTileImageQuality),
-                imageUrl: ctrl.wallpapers[index].thumbnail ?? ctrl.wallpapers[index].url,
-                imageBuilder: (context, imageProvider) {
-                  return CollWallImage(
-                    imageProvider: imageProvider,
-                    index: index,
-                    ctrl: ctrl,
-                  );
-                },
-                placeholder: (context, url) => Container(
+              return FadeTransition(
+                opacity: _animation,
+                child: CachedNetworkImage(
+                  maxHeightDiskCache: MediaQuery.of(context).size.height ~/
+                      (1.7 * kWallpaperTileImageQuality),
+                  memCacheHeight: MediaQuery.of(context).size.height ~/
+                      (1.7 * kWallpaperTileImageQuality),
+                  imageUrl: ctrl.wallpapers[index].thumbnail ??
+                      ctrl.wallpapers[index].url,
+                  imageBuilder: (context, imageProvider) {
+                    return CollWallImage(
+                      imageProvider: imageProvider,
+                      index: index,
+                      ctrl: ctrl,
+                    );
+                  },
+                  placeholder: (context, url) => Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
                           SizeConfig.safeBlockHorizontal * kBorderRadius,
                         ),
                         color: context.textTheme.headline6!.color!
-                            .withOpacity(0.01)),
+                            .withOpacity(0.02)),
+                    child: Center(child: CircularProgressIndicator()),
                   ),
-                errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
               );
             },
           );

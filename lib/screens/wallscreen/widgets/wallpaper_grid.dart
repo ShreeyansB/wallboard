@@ -44,6 +44,7 @@ class _WallGridState extends State<WallGrid> with TickerProviderStateMixin {
       }
     });
     super.initState();
+    _controller.forward();
   }
 
   @override
@@ -75,6 +76,8 @@ class _WallGridState extends State<WallGrid> with TickerProviderStateMixin {
                   dbController.wallpapers.add(wall);
                 }
               });
+              _controller.value = 0;
+              _controller.forward();
             }
 
             if (searchController.string.value == "") {
@@ -98,8 +101,6 @@ class _WallGridState extends State<WallGrid> with TickerProviderStateMixin {
                 crossAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing,
                 mainAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing),
             itemBuilder: (context, index) {
-              _controller.value = 0;
-              _controller.forward();
               return FadeTransition(
                 opacity: _animation,
                 child: CachedNetworkImage(
@@ -122,7 +123,8 @@ class _WallGridState extends State<WallGrid> with TickerProviderStateMixin {
                           SizeConfig.safeBlockHorizontal * kBorderRadius,
                         ),
                         color: context.textTheme.headline6!.color!
-                            .withOpacity(0.01)),
+                            .withOpacity(0.02)),
+                    child: Center(child: CircularProgressIndicator()),
                   ),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
@@ -202,9 +204,10 @@ class WallImage extends StatelessWidget {
                   condition: kBlurAmount != 0,
                   conditionalBuilder: (child) => BackdropFilter(
                     filter: ImageFilter.blur(
-                        sigmaX: kBlurAmount,
-                        sigmaY: kBlurAmount,
-                        tileMode: TileMode.decal),
+                      sigmaX: kBlurAmount,
+                      sigmaY: kBlurAmount,
+                      tileMode: TileMode.decal,
+                    ),
                     child: child,
                   ),
                   child: Container(

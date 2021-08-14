@@ -20,11 +20,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.transparent,
-      statusBarColor: Colors.transparent,
-    ));
-
     Get.put(DatabaseController());
     Get.put(NavController());
     Get.put(SlideController());
@@ -33,6 +28,13 @@ class MyApp extends StatelessWidget {
     Get.put(AboutController());
 
     Get.changeThemeMode(Get.find<DatabaseController>().getThemeType());
+    Future.delayed(Duration(milliseconds: 100), () {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        systemNavigationBarColor:
+            Get.theme.brightness == Brightness.light ? lBgColor : dBgColor,
+        statusBarColor: Colors.transparent,
+      ));
+    });
 
     return GetMaterialApp(
       title: 'Flutter Demo',

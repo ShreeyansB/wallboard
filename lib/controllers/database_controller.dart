@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:wallboard/dev_settings.dart';
@@ -102,6 +103,13 @@ class DatabaseController extends GetxController {
 
   void setThemeType(ThemeMode mode) {
     storage.write('theme', mode.toString());
+    Future.delayed(Duration(milliseconds: 300), () {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        systemNavigationBarColor:
+            Get.theme.brightness == Brightness.light ? lBgColor : dBgColor,
+        statusBarColor: Colors.transparent,
+      ));
+    });
   }
 
   ThemeMode getThemeType() {

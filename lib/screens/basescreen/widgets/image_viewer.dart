@@ -113,7 +113,8 @@ class _ImageViewerState extends State<ImageViewer>
         child: AppBar(
           leading: IconButton(
             onPressed: () => Get.back(),
-            icon: Icon(Icons.arrow_back_ios_rounded, color: context.textTheme.headline6!.color),
+            icon: Icon(Icons.arrow_back_ios_rounded,
+                color: context.textTheme.headline6!.color),
             iconSize: SizeConfig.safeBlockHorizontal * 7.4,
           ),
           title: Hero(
@@ -166,7 +167,7 @@ class _ImageViewerState extends State<ImageViewer>
               onDoubleTap: _handleDoubleTap,
               onDoubleTapDown: _handleDoubleTapDown,
               child: CachedNetworkImage(
-                imageUrl: widget.wall.thumbnail ?? widget.wall.url,
+                imageUrl: widget.wall.url,
                 maxHeightDiskCache: MediaQuery.of(context).size.height ~/ 0.8,
                 memCacheHeight: MediaQuery.of(context).size.height ~/ 0.8,
                 imageBuilder: (context, imageProvider) {
@@ -600,9 +601,9 @@ class _PaletteGridState extends State<PaletteGrid> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ColorPaletteButton(color: data[0]),
-                ColorPaletteButton(color: data[1]),
-                ColorPaletteButton(color: data[2]),
+                if (data.length > 0) ColorPaletteButton(color: data[0]),
+                if (data.length > 1) ColorPaletteButton(color: data[1]),
+                if (data.length > 2) ColorPaletteButton(color: data[2]),
               ],
             ),
             SizedBox(
@@ -611,9 +612,9 @@ class _PaletteGridState extends State<PaletteGrid> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ColorPaletteButton(color: data[3]),
-                ColorPaletteButton(color: data[4]),
-                ColorPaletteButton(color: data[5]),
+                if (data.length > 3) ColorPaletteButton(color: data[3]),
+                if (data.length > 4) ColorPaletteButton(color: data[4]),
+                if (data.length > 5) ColorPaletteButton(color: data[5]),
               ],
             ),
           ],

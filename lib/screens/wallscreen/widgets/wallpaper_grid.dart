@@ -21,10 +21,19 @@ class WallGrid extends StatefulWidget {
   _WallGridState createState() => _WallGridState();
 }
 
-class _WallGridState extends State<WallGrid> {
+class _WallGridState extends State<WallGrid> with TickerProviderStateMixin {
   ScrollController _scrollController = ScrollController();
   var dbController = Get.find<DatabaseController>();
   var searchController = Get.find<SearchController>();
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 1000),
+    vsync: this,
+  );
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeIn,
+  );
 
   @override
   void initState() {
@@ -40,6 +49,7 @@ class _WallGridState extends State<WallGrid> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -88,27 +98,34 @@ class _WallGridState extends State<WallGrid> {
                 crossAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing,
                 mainAxisSpacing: SizeConfig.safeBlockHorizontal * kGridSpacing),
             itemBuilder: (context, index) {
-              return CachedNetworkImage(
-                maxHeightDiskCache: MediaQuery.of(context).size.height ~/
-                    (1.7 * kWallpaperTileImageQuality),
-                memCacheHeight: MediaQuery.of(context).size.height ~/
-                    (1.7 * kWallpaperTileImageQuality),
-                imageUrl: ctrl.wallpapers[index].thumbnail ??
-                    ctrl.wallpapers[index].url,
-                imageBuilder: (context, imageProvider) {
-                  return WallImage(
-                    imageProvider: imageProvider,
-                    index: index,
-                    ctrl: ctrl,
-                  );
-                },
-                placeholder: (context, url) => Center(
-                    child: Container(
-                  height: SizeConfig.safeBlockHorizontal * 8,
-                  width: SizeConfig.safeBlockHorizontal * 8,
-                  child: CircularProgressIndicator(),
-                )),
-                errorWidget: (context, url, error) => Icon(Icons.error),
+              _controller.value = 0;
+              _controller.forward();
+              return FadeTransition(
+                opacity: _animation,
+                child: CachedNetworkImage(
+                  maxHeightDiskCache: MediaQuery.of(context).size.height ~/
+                      (1.7 * kWallpaperTileImageQuality),
+                  memCacheHeight: MediaQuery.of(context).size.height ~/
+                      (1.7 * kWallpaperTileImageQuality),
+                  imageUrl: ctrl.wallpapers[index].thumbnail ??
+                      ctrl.wallpapers[index].url,
+                  imageBuilder: (context, imageProvider) {
+                    return WallImage(
+                      imageProvider: imageProvider,
+                      index: index,
+                      ctrl: ctrl,
+                    );
+                  },
+                  placeholder: (context, url) => Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          SizeConfig.safeBlockHorizontal * kBorderRadius,
+                        ),
+                        color: context.textTheme.headline6!.color!
+                            .withOpacity(0.01)),
+                  ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
               );
             },
           );

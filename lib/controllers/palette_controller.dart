@@ -24,11 +24,12 @@ void computePalette(SendPort isolateToMain) async {
       var palette = await PaletteGenerator.fromImageProvider(
         img.image,
         size: Size(300, 240),
-        maximumColorCount: 6,
+        maximumColorCount: 8,
       );
       List<int> colors = [];
       palette.colors.forEach((element) => colors.add(element.value));
       print('[mainToIsolate] sending $url');
+      print(colors);
       isolateToMain.send([colors, url]);
     }
   });

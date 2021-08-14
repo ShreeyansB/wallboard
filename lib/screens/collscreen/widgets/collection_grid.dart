@@ -96,12 +96,14 @@ class _CollGridState extends State<CollGrid> {
                         ctrl: ctrl,
                       );
                     },
-                    placeholder: (context, url) => Center(
-                        child: Container(
-                      height: SizeConfig.safeBlockHorizontal * 8,
-                      width: SizeConfig.safeBlockHorizontal * 8,
-                      child: CircularProgressIndicator(),
-                    )),
+                    placeholder: (context, url) => Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          SizeConfig.safeBlockHorizontal * kBorderRadius,
+                        ),
+                        color: context.textTheme.headline6!.color!
+                            .withOpacity(0.01)),
+                  ),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   );
                 },

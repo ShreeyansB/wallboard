@@ -47,7 +47,7 @@ Color lBgColorAlt = Color(0xfff8edff);
 Color lAppbarColor = Color(0xfffbf5ff);
 Color lBottombarColor = Color(0xfffbf5ff);
 
-Color lBannerColor = Colors.white70;
+Color lBannerColor = Colors.white54;
 Color lBannerTitleColor = Colors.black;
 Color lBannerAuthorColor = Colors.black87;
 

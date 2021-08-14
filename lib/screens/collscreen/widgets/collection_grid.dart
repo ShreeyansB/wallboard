@@ -198,7 +198,7 @@ class CollImage extends StatelessWidget {
                         padding: EdgeInsets.all(
                             SizeConfig.safeBlockHorizontal * kBannerPadding),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: kIsCollectionNameCentered ? MainAxisAlignment.center : MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             ConditionalParentWidget(

@@ -7,7 +7,7 @@ import 'package:wallboard/models/wallpaper_model.dart';
 
 class DatabaseProvider extends GetConnect {
   static String jsonURL =
-      "https://api.jsonbin.io/b/61052fea046287097ea3f7c6/latest";
+      kDatabaseURL;
 
   Future<Response> getWalls() => get(jsonURL);
 }

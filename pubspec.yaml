@@ -3,7 +3,7 @@ description: A Wallpaper Dashboard App made in flutter.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -27,7 +27,6 @@ dependencies:
     sdk: flutter
   flutter_cache_manager: ^3.1.2
   flutter_isolate: ^2.0.0
-  flutter_native_splash: ^1.2.1
   get: ^4.3.0
   get_storage: ^2.0.3
   google_fonts: ^2.1.0
@@ -38,12 +37,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_native_splash: ^1.2.1
+  change_app_package_name: ^1.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

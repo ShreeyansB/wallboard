@@ -79,7 +79,11 @@ class GroupList extends StatelessWidget {
               SizedBox(
                 height: 25,
               ),
-              GroupTile(name: name, about: about[0]),
+              for (var i = 0; i < about.length; i++)
+                Padding(
+                  padding: EdgeInsets.only(top: i == 0 ? 0 : 10),
+                  child: GroupTile(name: name, about: about[i]),
+                ),
             ],
           )
         ],

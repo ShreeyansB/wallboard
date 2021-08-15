@@ -10,21 +10,5 @@
     "links": [
       "https://unsplash.com"
     ]
-  },
-  {
-    "group": "Wallboard",
-    "photo": "https://avatars.githubusercontent.com/u/37953798",
-    "name": "Shreeyans Bahadkar",
-    "description": "UI/UX Designer and Full Stack Flutter Developer.",
-    "buttons": [
-      "Github",
-      "LinkedIn",
-      "Telegram"
-    ],
-    "links": [
-      "https://github.com/ShreeyansB",
-      "https://in.linkedin.com/in/shreeyans-bahadkar-2b9946217",
-      "https://t.me/ballisticswami"
-    ]
   }
 ]

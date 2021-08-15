@@ -123,7 +123,7 @@ class _WallGridState extends State<WallGrid> with TickerProviderStateMixin {
                           SizeConfig.safeBlockHorizontal * kBorderRadius,
                         ),
                         color: context.textTheme.headline6!.color!
-                            .withOpacity(0.02)),
+                            .withOpacity(0.01)),
                     child: Center(child: CircularProgressIndicator()),
                   ),
                   errorWidget: (context, url, error) => Icon(Icons.error),

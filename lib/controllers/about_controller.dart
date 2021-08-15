@@ -29,7 +29,6 @@ class AboutController extends GetxController {
     about.forEach((obj) {
       if (!groups.contains(obj.group)) groups.add(obj.group);
     });
-
     groups.remove("Dashboard");
     groups.add("Dashboard");
   }

@@ -60,9 +60,10 @@ While setting up the JSON for the wallpapers, follow the given reference:
 | dimensions   | No       | String    | Image Dimensions                |
 | license      | No       | String    | Licensing Information           |
 
+[Example JSON](https://api.jsonbin.io/b/61052fea046287097ea3f7c6/latest)
+
 ### 5. Add Credits for About Screen
 
-[Example JSON](https://api.jsonbin.io/b/61052fea046287097ea3f7c6/latest)
 __Add your credits in *wallboard/assets/credits.json*.__
 Check the already written JSON for the JSON Model.
 

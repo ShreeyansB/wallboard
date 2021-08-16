@@ -71,6 +71,6 @@ Check the already written JSON for the JSON Model.
 Contact me on [Telegram](https://t.me/ballisticswami) if you need assistance.
 
 ## Planned Features
-* One Signal Notifications
+* One Signal Notifications (Done)
 * Language Support
 * iOS Support

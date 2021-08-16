@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 const String kDatabaseURL = "https://api.jsonbin.io/b/61052fea046287097ea3f7c6/latest"; // URL Where the wallpaper database is stored.
 const String kAppName = "Wallboard"; // This is the name which appears as the AppBar Title.
+const String? kOneSignalApiKey = null; // Replace null with your OneSignal API Key in quotation marks.
 
 // THEME SETTINGS - Common
 

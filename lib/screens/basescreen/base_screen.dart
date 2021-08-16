@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:wallboard/controllers/about_controller.dart';
 import 'package:wallboard/controllers/database_controller.dart';
 import 'package:wallboard/controllers/navigation_controller.dart';
@@ -22,6 +23,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var navController = Get.find<NavController>();
   final PageStorageBucket bucket = PageStorageBucket();
+
+  Future<void> initOneSignal() async {
+    OneSignal.shared.setAppId(kOneSignalApiKey.toString());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (kOneSignalApiKey != null) initOneSignal();
+  }
 
   Widget build(BuildContext context) {
     SizeConfig().init(context);

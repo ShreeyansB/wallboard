@@ -60,7 +60,7 @@ While setting up the JSON for the wallpapers, follow the given reference:
 | dimensions   | No       | String    | Image Dimensions                |
 | license      | No       | String    | Licensing Information           |
 
-[Example JSON](https://api.jsonbin.io/b/61052fea046287097ea3f7c6/latest)
+[Example JSON](https://api.jsonbin.io/v3/b/61052fea046287097ea3f7c6/latest)
 
 ### 5. Add Credits for About Screen
 
